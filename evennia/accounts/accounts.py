@@ -25,7 +25,7 @@ from evennia.comms.models import ChannelDB
 from evennia.commands import cmdhandler
 from evennia.server.models import ServerConfig
 from evennia.server.throttle import Throttle
-from evennia.server.linksessionhandler import AccountSessionHandler
+from evennia.server.sessionlinkhandler import AccountSessionHandler
 from evennia.utils import class_from_module, create, logger
 from evennia.utils.utils import lazy_property, to_str, make_iter, is_iter, variable_from_module
 from evennia.server.signals import (

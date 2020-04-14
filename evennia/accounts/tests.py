@@ -11,51 +11,6 @@ from evennia.utils import create
 from evennia.utils.utils import uses_database
 
 
-class TestAccountSessionHandler(TestCase):
-    "Check AccountSessionHandler class"
-
-    def setUp(self):
-        self.account = create.create_account(
-            f"TestAccount{randint(0, 999999)}",
-            email="test@test.com",
-            password="testpassword",
-            typeclass=DefaultAccount,
-        )
-        self.handler = self.account.sessions
-
-    def tearDown(self):
-        if hasattr(self, "account"):
-            self.account.delete()
-
-    def test_get(self):
-        "Check get method"
-        self.assertEqual(self.handler.get(), [])
-        self.assertEqual(self.handler.get(100), [])
-
-        s1 = MagicMock()
-        s1.logged_in = True
-        s1.sessid = 1
-        s1.uid = self.account.uid
-        self.handler.add(s1)
-        self.assertEqual([s.uid for s in self.handler.get()], [s1.uid])
-        self.assertEqual([s.sessid for s in self.handler.get()], [s1.sessid])
-
-        s2 = MagicMock()
-        s2.logged_in = True
-        s2.sessid = 2
-        s2.uid = self.account.uid
-        self.handler.add(s2)
-        self.assertEqual([s.uid for s in self.handler.get()], [s1.uid, s2.uid])
-        self.assertEqual([s.sessid for s in self.handler.get()], [s1.sessid, s2.sessid])
-
-    def test_all(self):
-        "Check all method"
-        self.assertEqual(self.handler.get(), self.handler.all())
-
-    def test_count(self):
-        "Check count method"
-        self.assertEqual(self.handler.count(), len(self.handler.get()))
-
 
 @override_settings(GUEST_ENABLED=True, GUEST_LIST=["bruce_wayne"])
 class TestDefaultGuest(EvenniaTest):
@@ -248,12 +203,8 @@ class TestDefaultAccount(TestCase):
             password="testpassword",
             typeclass=DefaultAccount,
         )
-        self.s1.uid = account.uid
-        SESSION_HANDLER[self.s1.uid] = self.s1
-        account.sessions.add(self.s1)
 
-        self.s1.logged_in = True
-        self.s1.data_out = Mock(return_value=None)
+        account.sessions.add(self.s1)
 
         obj = Mock()
         self.s1.puppet = obj

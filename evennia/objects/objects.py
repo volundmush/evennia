@@ -19,7 +19,7 @@ from evennia.scripts.scripthandler import ScriptHandler
 from evennia.commands import cmdset, command
 from evennia.commands.cmdsethandler import CmdSetHandler
 from evennia.commands import cmdhandler
-from evennia.server.linksessionhandler import ObjectSessionHandler
+from evennia.server.sessionlinkhandler import ObjectSessionHandler
 from evennia.utils import create
 from evennia.utils import search
 from evennia.utils import logger

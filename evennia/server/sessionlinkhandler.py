@@ -9,7 +9,7 @@ from evennia.server.signals import SIGNAL_ACCOUNT_POST_LOGIN, SIGNAL_ACCOUNT_POS
 from evennia.server.signals import SIGNAL_ACCOUNT_POST_FIRST_LOGIN, SIGNAL_ACCOUNT_POST_LAST_LOGOUT
 
 
-class EntitySessionHandler:
+class SessionLinkHandler:
     """
     Handles adding/removing session references to an Account, Puppet, or perhaps
     stranger things down the line. This is an Abstract Class - inherit from it and
@@ -54,6 +54,14 @@ class EntitySessionHandler:
         """
         pass
 
+    def do_add(self, session):
+        self._sessions.append(session)
+        self._sessids[session.sessid] = session
+
+    def do_remove(self, session):
+        self._sessions.remove(session)
+        del self._sessids[session.sessid]
+
     def add(self, session, force=False, sync=False, **kwargs):
         """
         Add session to handler. Do not call this directly - it is meant to be called from
@@ -79,8 +87,7 @@ class EntitySessionHandler:
             session.msg(e)
             return False
         self.at_before_link_session(session, force=force, sync=sync, **kwargs)
-        self._sessions.append(session)
-        self._sessids[session.sessid] = session
+        self.do_add(session)
         self.at_link_session(session, force=force, sync=sync, **kwargs)
         self.at_after_link_session(session, force=force, sync=sync, **kwargs)
 
@@ -105,8 +112,7 @@ class EntitySessionHandler:
             self.obj.msg(e)
             return
         self.at_before_unlink_session(session, force=force, reason=reason, **kwargs)
-        self._sessions.remove(session)
-        del self._sessids[session.sessid]
+        self.do_remove(session)
         self.at_unlink_session(session, force=force, reason=reason, **kwargs)
         self.at_after_unlink_session(session, force=force, reason=reason, **kwargs)
 
@@ -234,7 +240,7 @@ class EntitySessionHandler:
         raise NotImplementedError()
 
 
-class AccountSessionHandler(EntitySessionHandler):
+class AccountSessionHandler(SessionLinkHandler):
 
     def validate_link_request(self, session, force=False, sync=False, **kwargs):
         """
@@ -258,7 +264,6 @@ class AccountSessionHandler(EntitySessionHandler):
         if settings.MULTISESSION_MODE == 0:
             # disconnect all previous sessions.
             session.sessionhandler.disconnect_duplicate_sessions(session)
-
 
     def at_link_session(self, session, force=False, sync=False, **kwargs):
         """
@@ -309,7 +314,7 @@ class AccountSessionHandler(EntitySessionHandler):
         SIGNAL_ACCOUNT_POST_LOGOUT.send(sender=session.account, session=session)
 
 
-class ObjectSessionHandler(EntitySessionHandler):
+class ObjectSessionHandler(SessionLinkHandler):
 
     def validate_link_request(self, session, force=False, sync=False, **kwargs):
         # We only want to allow puppeting if it's by an authenticated Session

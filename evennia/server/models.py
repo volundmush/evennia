@@ -8,8 +8,6 @@ Config values should usually be set through the
 manager's conf() method.
 
 """
-import pickle
-
 from django.db import models
 from evennia.utils.idmapper.models import WeakSharedMemoryModel
 from evennia.utils import logger, utils
@@ -17,6 +15,7 @@ from evennia.utils.dbserialize import to_pickle, from_pickle
 from evennia.server.manager import ServerConfigManager
 from evennia.utils import picklefield
 
+from django.utils.translation import gettext as _
 
 # ------------------------------------------------------------
 #
@@ -133,3 +132,11 @@ class ServerConfig(WeakSharedMemoryModel):
         """
         self.key = key
         self.value = value
+
+# ------------------------------------------------------------
+#
+# Django Sessions - This has nothing to do with SessionDB!
+#
+# ------------------------------------------------------------
+
+

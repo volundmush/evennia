@@ -4,6 +4,7 @@ Sessionhandler for portal sessions
 
 
 import time
+import uuid
 from collections import deque, namedtuple
 from twisted.internet import reactor
 from django.conf import settings
@@ -11,6 +12,7 @@ from evennia.server.sessionhandler import SessionHandler
 from evennia.server.portal.amp import PCONN, PDISCONN, PCONNSYNC, PDISCONNALL
 from evennia.utils.logger import log_trace
 from evennia.utils.utils import class_from_module
+
 
 # module import
 _MOD_IMPORT = None
@@ -30,6 +32,8 @@ _ERROR_MAX_CHAR = settings.MAX_CHAR_LIMIT_WARNING
 _CONNECTION_QUEUE = deque()
 
 DUMMYSESSION = namedtuple("DummySession", ["sessid"])(0)
+
+_SESSION_STORE = class_from_module(settings.SESSION_ENGINE).SessionStore
 
 # -------------------------------------------------------------
 # Portal-SessionHandler class
@@ -70,6 +74,19 @@ class PortalSessionHandler(SessionHandler):
         """
         self.connection_time = time.time()
 
+    def generate_unique_uuid4(self):
+        """
+        We don't care that uuid4 is supposed to be unique by sheer dint of its
+        randomness. The Portal will ensure that one is not already in use.
+
+        Returns:
+            uuid4
+        """
+        new_uuid = uuid.uuid4()
+        if new_uuid in self:
+            new_uuid = self.generate_unique_uuid4()
+        return new_uuid
+
     def connect(self, session):
         """
         Called by protocol at first connect. This adds a not-yet
@@ -93,8 +110,26 @@ class PortalSessionHandler(SessionHandler):
             if not session.sessid:
                 # if the session already has a sessid (e.g. being inherited in the
                 # case of a webclient auto-reconnect), keep it
-                self.latest_sessid += 1
-                session.sessid = self.latest_sessid
+                session.sessid = self.generate_unique_uuid4()
+
+            create_django = False
+            # We must also assign a DjangoSession. It must be get-or-create'd.
+            if session.csessid:
+                django_sess = _SESSION_STORE(session_key=session.csessid)
+                # This will expire an existing expired session...
+                if django_sess.exists():
+                    session.django = django_sess
+                else:
+                    create_django = True
+            if create_django:
+                django_sess = _SESSION_STORE()
+                django_sess.create()
+                session.django = django_sess
+                session.csessid = django_sess.session_key
+
+            # This will automatically save.
+            session.django['last_login'] = 5
+
             session.server_connected = False
             _CONNECTION_QUEUE.appendleft(session)
             if len(_CONNECTION_QUEUE) > 1:

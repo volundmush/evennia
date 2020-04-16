@@ -574,3 +574,97 @@ def create_account(
 
 # alias
 account = create_account
+
+
+
+def create_session(
+    typeclass=None,
+    key=None,
+    account=None,
+    permissions=None,
+    locks=None,
+    aliases=None,
+    tags=None,
+    report_to=None,
+    attributes=None,
+    nattributes=None,
+):
+    """
+
+    Create a new in-game object.
+
+    Kwargs:
+        typeclass (class or str): Class or python path to a typeclass.
+        key (str): Name of the new Session. Will be a copy of the Account key, unless
+            otherwise specified. Failing both, it will be a #dbref.
+        account (int, AccountDB, or #dbref): The Account this Session is bound to.
+        permissions (list): A list of permission strings or tuples (permstring, category).
+        locks (str): one or more lockstrings, separated by semicolons.
+        aliases (list): A list of alternative keys or tuples (aliasstring, category).
+        tags (list): List of tag keys or tuples (tagkey, category) or (tagkey, category, data).
+        destination (Object or str): Obj or #dbref to use as an Exit's
+            target.
+        report_to (Object): The object to return error messages to.
+        attributes (list): Tuples on the form (key, value) or (key, value, category),
+           (key, value, lockstring) or (key, value, lockstring, default_access).
+            to set as Attributes on the new object.
+        nattributes (list): Non-persistent tuples on the form (key, value). Note that
+            adding this rarely makes sense since this data will not survive a reload.
+
+    Returns:
+        object (Object): A newly created object of the given typeclass.
+
+    Raises:
+        ObjectDB.DoesNotExist: If trying to create an Object with
+            `location` or `home` that can't be found.
+
+    """
+    global _SessionDB
+    if not _SessionDB:
+        from evennia.sessions.models import SessionDB as _SessionDB
+
+    typeclass = typeclass if typeclass else settings.BASE_SESSION_TYPECLASS
+
+    # convenience converters to avoid common usage mistake
+    permissions = make_iter(permissions) if permissions is not None else None
+    locks = make_iter(locks) if locks is not None else None
+    aliases = make_iter(aliases) if aliases is not None else None
+    tags = make_iter(tags) if tags is not None else None
+    attributes = make_iter(attributes) if attributes is not None else None
+
+    if isinstance(typeclass, str):
+        # a path is given. Load the actual typeclass
+        typeclass = class_from_module(typeclass, settings.TYPECLASS_PATHS)
+
+    # Setup input for the create command. We use ObjectDB as baseclass here
+    # to give us maximum freedom (the typeclasses will load
+    # correctly when each object is recovered).
+
+    # create new instance
+    new_session = typeclass(
+        db_key=key,
+        db_typeclass_path=typeclass.path,
+    )
+    # store the call signature for the signal
+    new_session._createdict = dict(
+        account=account,
+        key=key,
+        typeclass=typeclass.path,
+        permissions=permissions,
+        locks=locks,
+        aliases=aliases,
+        tags=tags,
+        report_to=report_to,
+        attributes=attributes,
+        nattributes=nattributes,
+    )
+    # this will trigger the save signal which in turn calls the
+    # at_first_save hook on the typeclass, where the _createdict can be
+    # used.
+    new_session.save()
+
+    return new_session
+
+
+# alias for create_session
+session = create_session

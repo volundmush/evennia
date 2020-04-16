@@ -1,13 +1,8 @@
-from mock import Mock, MagicMock, patch
-from random import randint
+from mock import MagicMock
 from unittest import TestCase
-from evennia.server import sessionlinkhandler
+from evennia.sessions import sessionlinkhandler
 
 from django.test import override_settings
-from evennia.accounts.accounts import DefaultAccount, DefaultGuest
-from evennia.utils.test_resources import EvenniaTest
-from evennia.utils import create
-from evennia.utils.utils import uses_database
 
 
 class TestLinkSessionHandler(TestCase):

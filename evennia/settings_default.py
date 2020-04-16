@@ -806,6 +806,8 @@ SESSION_COOKIE_DOMAIN = None
 # The name of the cookie to use for sessions.
 # Default: 'sessionid'
 SESSION_COOKIE_NAME = "sessionid"
+# The Session Engine Evennia should use.
+SESSION_ENGINE = "evennia.sessions.models"
 # Should the session expire when the browser closes?
 # Default: False
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False

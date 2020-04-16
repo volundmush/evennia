@@ -405,3 +405,106 @@ class ObjectSessionHandler(SessionLinkHandler):
     def save(self):
         self.obj.db_sessid = ",".join(str(session.sessid) for session in self._sessions if session)
         self.obj.save(update_fields=["db_sessid"])
+
+
+class LinkHandler:
+    """
+    This is the link handler that's handled on the Session side.
+    """
+
+    def __init__(self, session):
+        self.session = session
+        self.linked_sort = list()
+        self.linked = dict()
+        self.linked_state = list()
+
+    @property
+    def find_map(self):
+        """
+        The find map is a dictionary of methods that are used to locate link-kinds.
+        Such as 'account' and 'puppet'. These methods will be called by _find_entity.
+        """
+        return {
+            'account': self.find_account,
+            'puppet': self.find_object
+        }
+
+    def find_account(self, acc_id):
+        """
+        Find an Account by its ID.
+
+        Args:
+            acc_id (int): An AccountDB ID.
+
+        Returns:
+            Account (AccountDB): The account in question.
+        """
+        global _AccountDB
+        if not _AccountDB:
+            from evennia.accounts.models import AccountDB as _AccountDB
+        return _AccountDB.objects.get(id=acc_id)
+
+    def find_object(self, obj_id):
+        """
+        Find an ObjectDB by its ID.
+
+        Args:
+            obj_id (int): An ObjectDB ID.
+
+        Returns:
+
+        """
+        global _ObjectDB
+        if not _ObjectDB:
+            from evennia.objects.models import ObjectDB as _ObjectDB
+        return _ObjectDB.objects.get(id=obj_id)
+
+    def find_entity(self, kind, entity):
+        if isinstance(entity, int):
+            find_method = self.find_map.get(kind)
+            entity = find_method(entity)
+            if not entity:
+                raise ValueError("Cannot link to a non-existent entity!")
+        return entity
+
+    def link(self, kind, entity, force=False, sync=False, **kwargs):
+        """
+        Links the session to an entity.
+
+        Args:
+            kind (str): The kind of entity. examples are 'account' and 'puppet'
+            entity (object or int): The entity to link, or its ID to lookup.
+            sync (bool): Whether this is being called by Portal<->Server synchronization after a reload.
+                If yes, this will be passed through to linking calls to smoothly rebuild link state.
+        Raises:
+              ValueError (string): If any checks fail during linking, will be raised as a ValueError.
+                If an exception is raised, no link is performed. Nothing changes.
+        Returns:
+            entity (object): The entity that was linked.
+        """
+        entity = self.find_entity(kind, entity)
+
+        if entity.sessions.add(self.session, force=force, sync=sync, **kwargs):
+            self.linked[kind] = entity
+            if not sync:
+                self.sort_links()
+
+    def unlink(self, kind, entity, force=False, reason=None, **kwargs):
+        """
+        Unlinks an entity from this session.
+
+        Args:
+            kind (str): The kind of entity. examples are 'account' and 'puppet'
+            entity (object or int): The entity to unlink, or its ID to lookup.
+            force (bool): Don't stop for anything. Mainly used for Unexpected Disconnects
+            reason (str or None): A reason that might be displayed down the chain.
+        """
+        entity = self.find_entity(kind, entity)
+        if entity.sessions.remove(self.session, force=force, reason=reason, **kwargs):
+            if kind in self.linked:
+                del self.linked[kind]
+            self.sort_links()
+
+    def sort_links(self):
+        self.linked_sort = sorted(self.linked.items(), key=lambda o: o[1]._link_sort)
+        self.linked_state = [(link_type, entity.pk) for link_type, entity in self.linked_sort]

@@ -162,12 +162,10 @@ class ServerSession(Session):
 
     def __init__(self):
         """Initiate to avoid AttributeErrors down the line"""
-        self.uid = None
-        self.puid = None
         self.sessid = None
-        self.uname = None
         self.logged_in = None
         self.conn_time = None
+        self.django = None
         self.cmd_last_visible = None
         self.cmd_last = None
         self.cmd_total = None
@@ -175,26 +173,9 @@ class ServerSession(Session):
         self.server_data = dict()
         self.sessionhandler = None
         self.address = None
-        self.puppet = None
-        self.account = None
-        self.linked = dict()
-        self.linked_sort = list()
+        self.game_session = None
         self.cmdset_storage_string = ""
         self.cmdset = CmdSetHandler(self, True)
-        self._find_map = self._generate_find_map()
-
-    def _generate_find_map(self):
-        """
-        The find map is a dictionary of methods that are used to locate link-kinds.
-        Such as 'account' and 'puppet'. These methods will be called by _find_entity.
-
-        Returns:
-            link method (method): The method to call.
-        """
-        return {
-            'account': self.find_account,
-            'puppet': self.find_object
-        }
 
     def __cmdset_storage_get(self):
         return [path.strip() for path in self.cmdset_storage_string.split(",")]
@@ -204,89 +185,9 @@ class ServerSession(Session):
 
     cmdset_storage = property(__cmdset_storage_get, __cmdset_storage_set)
 
-    def find_account(self, acc_id):
-        """
-        Find an Account by its ID.
-
-        Args:
-            acc_id (int): An AccountDB ID.
-
-        Returns:
-            Account (AccountDB): The account in question.
-        """
-        global _AccountDB
-        if not _AccountDB:
-            from evennia.accounts.models import AccountDB as _AccountDB
-        return _AccountDB.objects.get(id=acc_id)
-
-    def find_object(self, obj_id):
-        """
-        Find an ObjectDB by its ID.
-
-        Args:
-            obj_id (int): An ObjectDB ID.
-
-        Returns:
-
-        """
-        global _ObjectDB
-        if not _ObjectDB:
-            from evennia.objects.models import ObjectDB as _ObjectDB
-        return _ObjectDB.objects.get(id=obj_id)
-
-    def find_entity(self, kind, entity):
-        if isinstance(entity, int):
-            find_method = self._find_map.get(kind)
-            entity = find_method(entity)
-            if not entity:
-                raise ValueError("Cannot link to a non-existent entity!")
-        return entity
-
-    def link(self, kind, entity, force=False, sync=False, **kwargs):
-        """
-        Links the session to an entity.
-
-        Args:
-            kind (str): The kind of entity. examples are 'account' and 'puppet'
-            entity (object or int): The entity to link, or its ID to lookup.
-            sync (bool): Whether this is being called by Portal<->Server synchronization after a reload.
-                If yes, this will be passed through to linking calls to smoothly rebuild link state.
-        Raises:
-              ValueError (string): If any checks fail during linking, will be raised as a ValueError.
-                If an exception is raised, no link is performed. Nothing changes.
-        Returns:
-            entity (object): The entity that was linked.
-        """
-        entity = self.find_entity(kind, entity)
-
-        if entity.sessions.add(self, force=force, sync=sync, **kwargs):
-            self.linked[kind] = entity
-            if not sync:
-                self.sort_links()
-
-    def unlink(self, kind, entity, force=False, reason=None, **kwargs):
-        """
-        Unlinks an entity from this session.
-
-        Args:
-            kind (str): The kind of entity. examples are 'account' and 'puppet'
-            entity (object or int): The entity to unlink, or its ID to lookup.
-            force (bool): Don't stop for anything. Mainly used for Unexpected Disconnects
-            reason (str or None): A reason that might be displayed down the chain.
-        """
-        entity = self.find_entity(kind, entity)
-        if entity.sessions.remove(self, force=force, reason=reason, **kwargs):
-            if kind in self.linked:
-                del self.linked[kind]
-            self.sort_links()
-
-    def sort_links(self):
-        self.linked_sort = sorted(self.linked.items(), key=lambda o: o[1]._link_sort)
-        self.linked_state = [(link_type, entity.pk) for link_type, entity in self.linked_sort]
-
     def at_sync(self):
         """
-        This is called whenever a session has been resynced with the
+        This is called whenever a ServerSession has been resynced with the
         portal.  At this point all relevant attributes have already
         been set and self.account been assigned (if applicable).
 
@@ -296,104 +197,13 @@ class ServerSession(Session):
         """
         super().at_sync()
 
-        if not self.logged_in:
-            # assign the unloggedin-command set.
-            self.cmdset_storage = settings.CMDSET_UNLOGGEDIN
-
-        self.cmdset.update(init_mode=True)
-
-        for link_kind, link_id in self.linked_state:
-            try:
-                self.link(link_kind, link_id, sync=True)
-            except Exception as e:
-                # what the heck happened?
-                continue
-        self.sort_links()
-
-    def at_login(self, account):
-        """
-        Hook called by sessionhandler when the session becomes authenticated.
-
-        Args:
-            account (Account): The account associated with the session.
-
-        """
-        account.sessions.add(self)
-        self.account = account
-        self.uid = self.account.id
-        self.uname = self.account.username
-        self.logged_in = True
-        self.conn_time = time.time()
-        self.puid = None
-        self.puppet = None
-        self.cmdset_storage = settings.CMDSET_SESSION
-
-        # Update account's last login time.
-        self.account.last_login = timezone.now()
-        self.account.save()
-
-        # add the session-level cmdset
-        self.cmdset = CmdSetHandler(self, True)
-
     def at_disconnect(self, reason=None):
         """
-        Hook called by sessionhandler when disconnecting this session.
+        Hook called by ServerSessionHandler when disconnecting this ServerSession.
 
         """
-        if self.logged_in:
-            account = self.account
-            account.sessions.remove(self)
-            if self.puppet:
-                account.unpuppet_object(self)
-            uaccount = account
-            uaccount.last_login = timezone.now()
-            uaccount.save()
-            # calling account hook
-            account.at_disconnect(reason)
-            self.logged_in = False
-            if not self.sessionhandler.sessions_from_account(account):
-                # no more sessions connected to this account
-                account.is_connected = False
-            # this may be used to e.g. delete account after disconnection etc
-            account.at_post_disconnect()
-            # remove any webclient settings monitors associated with this
-            # session
-            MONITOR_HANDLER.remove(account, "_saved_webclient_options", self.sessid)
-
-    def get_account(self):
-        """
-        Get the account associated with this session
-
-        Returns:
-            account (Account): The associated Account.
-
-        """
-        return self.logged_in and self.account
-
-    def get_puppet(self):
-        """
-        Get the in-game character associated with this session.
-
-        Returns:
-            puppet (Object): The puppeted object, if any.
-
-        """
-        return self.logged_in and self.puppet
-
-    get_character = get_puppet
-
-    def get_puppet_or_account(self):
-        """
-        Get puppet or account.
-
-        Returns:
-            controller (Object or Account): The puppet if one exists,
-                otherwise return the account.
-
-        """
-        if self.logged_in:
-            return self.puppet if self.puppet else self.account
-        return None
+        if self.game_session:
+            self.game_session.remove(self, reason=reason)
 
     def log(self, message, channel=True):
         """
@@ -488,28 +298,6 @@ class ServerSession(Session):
             this data off to `self.sessionhandler.call_inputfuncs(self, **kwargs)`.
         """
         self.sessionhandler.call_inputfuncs(self, **kwargs)
-
-    def msg(self, text=None, **kwargs):
-        """
-        Wrapper to mimic msg() functionality of Objects and Accounts.
-
-        Args:
-            text (str): String input.
-
-        Kwargs:
-            any (str or tuple): Send-commands identified
-                by their keys. Or "options", carrying options
-                for the protocol(s).
-
-        """
-        # this can happen if this is triggered e.g. a command.msg
-        # that auto-adds the session, we'd get a kwarg collision.
-        kwargs.pop("session", None)
-        kwargs.pop("from_obj", None)
-        if text is not None:
-            self.data_out(text=text, **kwargs)
-        else:
-            self.data_out(**kwargs)
 
     def execute_cmd(self, raw_string, session=None, **kwargs):
         """
@@ -640,128 +428,3 @@ class ServerSession(Session):
     def access(self, *args, **kwargs):
         """Dummy method to mimic the logged-in API."""
         return True
-
-
-class EntitySessionHandler:
-    """
-    Handles adding/removing session references to an Account, Puppet, or perhaps
-    stranger things down the line.
-    """
-
-    def __init__(self, obj):
-        """
-        Initializes the handler.
-
-        Args:
-            obj (Object): The object on which the handler is defined.
-
-        """
-        self.obj = obj
-        self._sessions_dict = dict()
-        self._sessions = list()
-
-    def _save(self):
-        """
-        Saves sessids to persistent storage. Currently just used by Puppets.
-
-        Args:
-            Sessions (list of Sessions): A list of Sessions ids.
-
-        """
-        pass
-
-    def get(self, sessid=None):
-        """
-        Get the sessions linked to this Object.
-
-        Args:
-            sessid (int, optional): A specific session id.
-
-        Returns:
-            sessions (list): The sessions connected to this object. If `sessid` is given,
-                this is a list of one (or zero) elements.
-
-        Notes:
-            Aliased to `self.all()`.
-
-        """
-        if sessid:
-            found = self._sessions_dict.get(sessid, [])
-            if found:
-                return [found]
-            return found
-        return self._sessions
-
-    def all(self):
-        """
-        Alias to get(), returning all sessions.
-
-        Returns:
-            sessions (list): All sessions.
-
-        """
-        return self.get()
-
-    def add(self, session):
-        """
-        Add session to handler.
-
-        Args:
-            session (Session or int): Session or session id to add.
-
-        Notes:
-            We will only add a session/sessid if this actually also exists
-            in the the core sessionhandler.
-
-        """
-        try:
-            sessid = session.sessid
-        except AttributeError:
-            sessid = session
-            session = self._sessions_dict.get(sessid, None)
-
-        if sessid in self._sessions_dict:
-            # this really shouldn't happen, but we don't want to store duplicates.
-            return
-        self._sessions_dict[sessid] = session
-        self._sessions.append(session)
-        self._save()
-
-    def remove(self, session):
-        """
-        Remove session from handler.
-
-        Args:
-            session (Session or int): Session or session id to remove.
-
-        """
-        try:
-            sessid = session.sessid
-        except AttributeError:
-            sessid = session
-            session = self._sessions_dict.get(sessid, None)
-
-        if sessid not in self._sessions_dict:
-            return
-        del self._sessions_dict[sessid]
-        self._sessions.remove(session)
-        self._save()
-
-    def clear(self):
-        """
-        Clear all handled sessids.
-
-        """
-        self._sessions_dict.clear()
-        self._sessions.clear()
-        self._save()
-
-    def count(self):
-        """
-        Get amount of sessions connected.
-
-        Returns:
-            sesslen (int): Number of sessions handled.
-
-        """
-        return len(self._sessions)

@@ -223,7 +223,7 @@ def _init():
 
     # utilities
     from django.conf import settings
-    from .locks import lockfuncs
+    from evennia.evlib.locks import lockfuncs
     from .utils import logger
     from .utils import gametime
     from .utils import ansi

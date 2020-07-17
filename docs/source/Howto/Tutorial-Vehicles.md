@@ -127,7 +127,7 @@ current location of the train (back outside to its current location). We stacked
 To make the commands work we need to add this cmdset to our train typeclass:
 
 ```python
-# file mygame/typeclasses/train.py
+db
 
 from evennia import DefaultObject
 from commands.train import CmdSetTrain
@@ -329,7 +329,7 @@ care of the driving.
 Let's make a new file in `mygame/typeclasses/trainscript.py`
 
 ```python
-# file mygame/typeclasses/trainscript.py
+db
 
 from evennia import DefaultScript
 

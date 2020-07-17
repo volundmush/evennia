@@ -246,53 +246,14 @@ Characters
 from evennia import DefaultCharacter
 
 class Character(DefaultCharacter):
-    """
-    The default character class.
-
-    ...
-    """
+    commands
 
     def announce_move_from(self, destination, msg=None, mapping=None):
-        """
-        Called if the move is to be announced. This is
-        called while we are still standing in the old
-        location.
-
-        Args:
-            destination (Object): The place we are going to.
-            msg (str, optional): a replacement message.
-            mapping (dict, optional): additional mapping objects.
-
-        You can override this method and call its parent with a
-        message to simply change the default message.  In the string,
-        you can use the following as mappings (between braces):
-            object: the object which is moving.
-            exit: the exit from which the object is moving (if found).
-            origin: the location of the object before the move.
-            destination: the location of the object after moving.
-
-        """
+        commands
         super().announce_move_from(destination, msg="{object} leaves {exit}.")
 
     def announce_move_to(self, source_location, msg=None, mapping=None):
-        """
-        Called after the move if the move was not quiet. At this point
-        we are standing in the new location.
-
-        Args:
-            source_location (Object): The place we came from
-            msg (str, optional): the replacement message if location.
-            mapping (dict, optional): additional mapping objects.
-
-        You can override this method and call its parent with a
-        message to simply change the default message.  In the string,
-        you can use the following as mappings (between braces):
-            object: the object which is moving.
-            exit: the exit from which the object is moving (if found).
-            origin: the location of the object before the move.
-            destination: the location of the object after moving.
-
-        """
+        commands
         super().announce_move_to(source_location, msg="{object} arrives from the {exit}.")
 ```
 

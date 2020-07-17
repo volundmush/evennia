@@ -75,10 +75,10 @@ from evennia import DefaultScript
 from evennia import DefaultCharacter
 from evennia import DefaultRoom
 from evennia import DefaultExit
-from evennia.commands.default.muxcommand import MuxCommand
+from evennia.muxlib.commands.muxcommand import MuxCommand
 from evennia.utils.utils import inherits_from
 from evennia.utils import search, utils, logger
-from evennia.prototypes.spawner import spawn
+from evennia.muxlib.prototypes.spawner import spawn
 
 # Tag used by puzzles
 _PUZZLES_TAG_CATEGORY = "puzzles"
@@ -128,7 +128,7 @@ def maskout_protodef(protodef, mask):
     return protodef
 
 
-# Colorize the default success message
+# Colorize the commands success message
 def _colorize_message(msg):
     _i = 0
     _colors = ["|r", "|g", "|y"]

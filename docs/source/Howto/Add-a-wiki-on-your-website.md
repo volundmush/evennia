@@ -107,7 +107,7 @@ you will need to add two URLs in `custom_patterns` and add one import line:
 from django.conf.urls import url, include
 from django.urls import path # NEW!
 
-# default evenni	a patterns
+commands
 from evennia.web.urls import urlpatterns
 
 # eventual custom patterns

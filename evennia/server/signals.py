@@ -77,7 +77,7 @@ SIGNAL_HELPENTRY_POST_CREATE = Signal()
 # first created, after all hooks.
 SIGNAL_CHANNEL_POST_CREATE = Signal()
 
-# Django default signals (https://docs.djangoproject.com/en/2.2/topics/signals/)
+# Django commands signals (https://docs.djangoproject.com/en/2.2/topics/signals/)
 
 from django.db.models.signals import (
     pre_save,  # Sent before a typeclass' .save is called.

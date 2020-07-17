@@ -285,7 +285,7 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
 
         super().at_cmdset_creation()
         #
-        # any commands you add below will overload the default ones
+        commands
         #
 
 class AccountCmdSet(default_cmds.AccountCmdSet):
@@ -296,7 +296,7 @@ class AccountCmdSet(default_cmds.AccountCmdSet):
 
         super().at_cmdset_creation()
         #
-        # any commands you add below will overload the default ones
+        commands
         #
 
 class UnloggedinCmdSet(default_cmds.UnloggedinCmdSet):
@@ -307,7 +307,7 @@ class UnloggedinCmdSet(default_cmds.UnloggedinCmdSet):
 
         super().at_cmdset_creation()
         #
-        # any commands you add below will overload the default ones
+        commands
         #
 
 class SessionCmdSet(default_cmds.SessionCmdSet):
@@ -318,7 +318,7 @@ class SessionCmdSet(default_cmds.SessionCmdSet):
 
         super().at_cmdset_creation()
         #
-        # any commands you add below will overload the default ones
+        commands
         #
 ```
 

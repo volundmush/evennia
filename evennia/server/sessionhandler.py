@@ -25,7 +25,7 @@ from evennia.utils.utils import (
     callables_from_module,
     class_from_module,
 )
-from evennia.server.portal import amp
+from evennia.portal import amp
 from evennia.server.signals import SIGNAL_ACCOUNT_POST_LOGIN, SIGNAL_ACCOUNT_POST_LOGOUT
 from evennia.server.signals import SIGNAL_ACCOUNT_POST_FIRST_LOGIN, SIGNAL_ACCOUNT_POST_LAST_LOGOUT
 from evennia.utils.inlinefuncs import parse_inlinefunc
@@ -78,11 +78,11 @@ def delayed_import():
         modulename, classname = settings.SERVER_SESSION_CLASS.rsplit(".", 1)
         _ServerSession = variable_from_module(modulename, classname)
     if not _AccountDB:
-        from evennia.accounts.models import AccountDB as _AccountDB
+        from evennia.muxlib.accounts.models import AccountDB as _AccountDB
     if not _ServerConfig:
         from evennia.server.models import ServerConfig as _ServerConfig
     if not _ScriptDB:
-        from evennia.scripts.models import ScriptDB as _ScriptDB
+        from evennia.muxlib.scripts.models import ScriptDB as _ScriptDB
     # including once to avoid warnings in Python syntax checkers
     assert _ServerSession
     assert _AccountDB

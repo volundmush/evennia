@@ -59,7 +59,7 @@ class AuditedServerSession(ServerSession):
     *** WARNING ***
     All strings are recorded and stored in plaintext. This includes those strings
     which might contain sensitive data (create, connect, @password). These commands
-    have their arguments masked by default, but you must mask or mask any
+    have their arguments masked by commands, but you must mask or mask any
     custom commands of your own that handle sensitive information.
 
     See README.md for installation/configuration instructions.

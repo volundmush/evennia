@@ -13,7 +13,7 @@ stamina, magic, and etc. displayed as bars rather than bare numerical
 values, so using this module to present this data this way may make it
 more accessible. Keep in mind, however, that players may also be using
 a screen reader to connect to your game, which will not be able to
-represent the colors of the bar in any way. By default, the values
+represent the colors of the bar in any way. By commands, the values
 represented are rendered as text inside the bar which can be read by
 screen readers.
 

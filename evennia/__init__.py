@@ -170,21 +170,10 @@ def _init():
     global BASE_SCRIPT_TYPECLASS, BASE_GUEST_TYPECLASS
 
     # Parent typeclasses
-    from .accounts.accounts import DefaultAccount
-    from .accounts.accounts import DefaultGuest
-    from .objects.objects import DefaultObject
-    from .objects.objects import DefaultCharacter
-    from .objects.objects import DefaultRoom
-    from .objects.objects import DefaultExit
-    from .comms.comms import DefaultChannel
-    from .scripts.scripts import DefaultScript
+    from evennia.muxlib.accounts.accounts import DefaultAccount
+    from evennia.muxlib.accounts.accounts import DefaultGuest
 
     # Database models
-    from .objects.models import ObjectDB
-    from .accounts.models import AccountDB
-    from .scripts.models import ScriptDB
-    from .comms.models import ChannelDB
-    from .comms.models import Msg
 
     # commands
     from .commands.command import Command, InterruptCommand
@@ -213,7 +202,6 @@ def _init():
     from .utils import logger
     from .utils import gametime
     from .utils import ansi
-    from .prototypes.spawner import spawn
     from . import contrib
     from .utils.evmenu import EvMenu
     from .utils.evtable import EvTable
@@ -224,11 +212,7 @@ def _init():
     from .server import signals
 
     # handlers
-    from .scripts.tickerhandler import TICKER_HANDLER
-    from .scripts.taskhandler import TASK_HANDLER
     from .server.sessionhandler import SESSION_HANDLER
-    from .comms.channelhandler import CHANNEL_HANDLER
-    from .scripts.monitorhandler import MONITOR_HANDLER
 
     # containers
     from .utils.containers import GLOBAL_SCRIPTS
@@ -268,14 +252,14 @@ def _init():
 
         """
 
-        from .help.models import HelpEntry
-        from .accounts.models import AccountDB
-        from .scripts.models import ScriptDB
-        from .comms.models import Msg, ChannelDB
-        from .objects.models import ObjectDB
+        from evennia.muxlib.help.models import HelpEntry
+        from evennia.muxlib.accounts.models import AccountDB
+        from evennia.muxlib.scripts.models import ScriptDB
+        from evennia.muxlib.comms import Msg, ChannelDB
+        from evennia.muxlib.objects.models import ObjectDB
         from .server.models import ServerConfig
-        from .typeclasses.attributes import Attribute
-        from .typeclasses.tags import Tag
+        from .db.attributes import Attribute
+        from .db.tags import Tag
 
         # create container's properties
         helpentries = HelpEntry.objects
@@ -297,18 +281,14 @@ def _init():
 
     class DefaultCmds(_EvContainer):
         """
-        This container holds direct shortcuts to all default commands in Evennia.
+        This container holds direct shortcuts to all commands commands in Evennia.
 
         To access in code, do 'from evennia import default_cmds' then
         access the properties on the imported default_cmds object.
 
         """
 
-        from .commands.default.cmdset_character import CharacterCmdSet
-        from .commands.default.cmdset_account import AccountCmdSet
-        from .commands.default.cmdset_unloggedin import UnloggedinCmdSet
-        from .commands.default.cmdset_session import SessionCmdSet
-        from .commands.default.muxcommand import MuxCommand, MuxAccountCommand
+        from evennia.muxlib.commands.muxcommand import MuxCommand, MuxAccountCommand
 
         def __init__(self):
             "populate the object with commands"
@@ -320,17 +300,15 @@ def _init():
                 cmdlist = utils.variable_from_module(module, module.__all__)
                 self.__dict__.update(dict([(c.__name__, c) for c in cmdlist]))
 
-            from .commands.default import (
-                admin,
-                batchprocess,
-                building,
-                comms,
-                general,
-                account,
-                help,
-                system,
-                unloggedin,
-            )
+            from evennia.muxlib.commands import batchprocess
+            from evennia.muxlib.commands import general
+            from evennia.muxlib.commands import system
+            from evennia.muxlib.commands import admin
+            from evennia.muxlib.commands import account
+            from evennia.muxlib.commands import help
+            from evennia.muxlib.commands import building
+            from evennia.muxlib.commands import comms
+            from evennia.muxlib.commands import unloggedin
 
             add_cmds(admin)
             add_cmds(building)

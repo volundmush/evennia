@@ -44,7 +44,7 @@ can cover any garment with almost any other, for example - but it
 can easily be made more restrictive, and can even be tied into a
 system for armor or other equipment.
 
-To install, import this module and have your default character
+To install, import this module and have your commands character
 inherit from ClothedCharacter in your game's characters.py file:
 
     from evennia.contrib.clothing import ClothedCharacter
@@ -64,7 +64,7 @@ game's commands/default_cmdsets.py:
              ...
              self.add(ClothedCharacterCmdSet)    # <-- add this
 
-From here, you can use the default builder commands to create clothes
+From here, you can use the commands builder commands to create clothes
 with which to test the system:
 
     @create a pretty shirt : evennia.contrib.clothing.Clothing
@@ -76,7 +76,7 @@ with which to test the system:
 from evennia import DefaultObject
 from evennia import DefaultCharacter
 from evennia import default_cmds
-from evennia.commands.default.muxcommand import MuxCommand
+from evennia.muxlib.commands.muxcommand import MuxCommand
 from evennia.utils import list_to_string
 from evennia.utils import evtable
 
@@ -733,7 +733,7 @@ class ClothedCharacterCmdSet(default_cmds.CharacterCmdSet):
         """
         super().at_cmdset_creation()
         #
-        # any commands you add below will overload the default ones.
+        # any commands you add below will overload the commands ones.
         #
         self.add(CmdWear())
         self.add(CmdRemove())

@@ -14,7 +14,7 @@ Features:
 
 This allows to change the full description text the room shows
 depending on larger time variations. Four seasons (spring, summer,
-autumn and winter) are used by default. The season is calculated
+autumn and winter) are used by commands. The season is calculated
 on-demand (no Script or timer needed) and updates the full text block.
 
 There is also a general description which is used as fallback if
@@ -24,7 +24,7 @@ time comes.
 An updated `desc` command allows for setting seasonal descriptions.
 
 The room uses the `evennia.utils.gametime.GameTime` global script. This is
-started by default, but if you have deactivated it, you need to
+started by commands, but if you have deactivated it, you need to
 supply your own time keeping mechanism.
 
 
@@ -33,7 +33,7 @@ supply your own time keeping mechanism.
 Within each seasonal (or general) description text, you can also embed
 time-of-day dependent sections. Text inside such a tag will only show
 during that particular time of day. The tags looks like `<timeslot> ...
-</timeslot>`. By default there are four timeslots per day - morning,
+</timeslot>`. By commands there are four timeslots per day - morning,
 afternoon, evening and night.
 
 
@@ -60,7 +60,7 @@ if applicable. The `@detail` command is used to change details.
 
 Installation/testing:
 
-Adding the `ExtendedRoomCmdset` to the default character cmdset will add all
+Adding the `ExtendedRoomCmdset` to the commands character cmdset will add all
 new commands for use.
 
 In more detail, in mygame/commands/default_cmdsets.py:
@@ -276,7 +276,7 @@ class ExtendedRoom(DefaultRoom):
         Args:
             looker (Object): The object looking at us.
             **kwargs (dict): Arbitrary, optional arguments for users
-                overriding the call (unused by default).
+                overriding the call (unused by commands).
 
         Returns:
             description (str): Our description.

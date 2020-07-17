@@ -477,8 +477,8 @@ class EventHandler(DefaultScript):
             trace (list): the traceback containing the exception.
 
         Notes:
-            This method can be useful to override to change the default
-            handling of errors.  By default, the error message is sent to
+            This method can be useful to override to change the commands
+            handling of errors.  By commands, the error message is sent to
             the character who last updated the callback, if connected.
             If not, display to the everror channel.
 

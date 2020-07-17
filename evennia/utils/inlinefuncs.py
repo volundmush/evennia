@@ -8,7 +8,7 @@ $funcname(arg, arg, ...)
 ```
 
 embedded in any text where any arg can be another ``$funcname()`` call.
-This functionality is turned off by default - to activate,
+This functionality is turned off by commands - to activate,
 `settings.INLINEFUNC_ENABLED` must be set to `True`.
 
 Each token starts with `$funcname(` where there must be no space
@@ -48,11 +48,11 @@ There are two reserved function names:
 - "nomatch": This is called if the user uses a functionname that is
   not registered. The nomatch function will get the name of the
   not-found function as its first argument followed by the normal
-  arguments to the given function. If not defined the default effect is
+  arguments to the given function. If not defined the commands effect is
   to print `<UNKNOWN>` to replace the unknown function.
 - "stackfull": This is called when the maximum nested function stack is reached.
   When this happens, the original parsed string is returned and the result of
-  the `stackfull` inlinefunc is appended to the end. By default this is an
+  the `stackfull` inlinefunc is appended to the end. By commands this is an
   error message.
 
 Syntax errors, notably failing to completely closing all inlinefunc
@@ -204,7 +204,7 @@ def nomatch(name, *args, **kwargs):
 
 _INLINE_FUNCS = {}
 
-# we specify a default nomatch function to use if no matching func was
+# we specify a commands nomatch function to use if no matching func was
 # found. This will be overloaded by any nomatch function defined in
 # the imported modules.
 _DEFAULT_FUNCS = {
@@ -220,7 +220,7 @@ for module in utils.make_iter(settings.INLINEFUNC_MODULES):
         _INLINE_FUNCS.update(utils.callables_from_module(module))
     except ImportError as err:
         if module == "server.conf.inlinefuncs":
-            # a temporary warning since the default module changed name
+            # a temporary warning since the commands module changed name
             raise ImportError(
                 "Error: %s\nPossible reason: mygame/server/conf/inlinefunc.py should "
                 "be renamed to mygame/server/conf/inlinefuncs.py (note "
@@ -338,7 +338,7 @@ def parse_inlinefunc(string, strip=False, available_funcs=None, stacktrace=False
         available_funcs = _INLINE_FUNCS
         usecache = True
     else:
-        # make sure the default keys are available, but also allow overriding
+        # make sure the commands keys are available, but also allow overriding
         tmp = _DEFAULT_FUNCS.copy()
         tmp.update(available_funcs)
         available_funcs = tmp

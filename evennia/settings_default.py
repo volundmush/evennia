@@ -7,9 +7,9 @@ All settings changes should be done by copy-pasting the variable and
 its value to <gamedir>/server/conf/settings.py.
 
 Hint: Don't copy&paste over more from this file than you actually want
-to change.  Anything you don't copy&paste will thus retain its default
+to change.  Anything you don't copy&paste will thus retain its commands
 value - which may change as Evennia is developed. This way you can
-always be sure of what you have changed and what is default behaviour.
+always be sure of what you have changed and what is commands behaviour.
 
 """
 from django.contrib.messages import constants as messages
@@ -84,7 +84,7 @@ WEBSERVER_THREADPOOL_LIMITS = (1, 20)
 # the websocket one.
 WEBCLIENT_ENABLED = True
 # Activate Websocket support for modern browsers. If this is on, the
-# default webclient will use this and only use the ajax version if the browser
+# commands webclient will use this and only use the ajax version if the browser
 # is too old to support websockets. Requires WEBCLIENT_ENABLED.
 WEBSOCKET_CLIENT_ENABLED = True
 # Server-side websocket port to open for the webclient. Note that this value will
@@ -108,7 +108,7 @@ EVENNIA_ADMIN = True
 # The Server opens an AMP port so that the portal can
 # communicate with it. This is an internal functionality of Evennia, usually
 # operating between two processes on the same machine. You usually don't need to
-# change this unless you cannot use the default AMP port/host for
+# change this unless you cannot use the commands AMP port/host for
 # whatever reason.
 AMP_HOST = "localhost"
 AMP_PORT = 4006
@@ -170,7 +170,7 @@ IDLE_TIMEOUT = -1
 # The idle command can be sent to keep your session active without actually
 # having to spam normal commands regularly. It gives no feedback, only updates
 # the idle timer. Note that "idle" will *always* work, even if a different
-# command-name is given here; this is because the webclient needs a default
+# command-name is given here; this is because the webclient needs a commands
 # to send to avoid proxy timeouts.
 IDLE_COMMAND = "idle"
 # The set of encodings tried. An Account object may set an attribute "encoding" on
@@ -178,7 +178,7 @@ IDLE_COMMAND = "idle"
 # given, this list is tried, in order, aborting on the first match.
 # Add sets for languages/regions your accounts are likely to use.
 # (see http://en.wikipedia.org/wiki/Character_encoding)
-# Telnet default encoding, unless specified by the client, will be ENCODINGS[0].
+# Telnet commands encoding, unless specified by the client, will be ENCODINGS[0].
 ENCODINGS = ["utf-8", "latin-1", "ISO-8859-1"]
 # Regular expression applied to all output to a given session in order
 # to strip away characters (usually various forms of decorations) for the benefit
@@ -243,7 +243,7 @@ IN_GAME_ERRORS = True
 
 # Database config syntax:
 # ENGINE - path to the the database backend. Possible choices are:
-#            'django.db.backends.sqlite3', (default)
+#            'django.db.backends.sqlite3', (commands)
 #            'django.db.backends.mysql',
 #            'django.db.backends.postgresql',
 #            'django.db.backends.oracle' (untested).
@@ -253,7 +253,7 @@ IN_GAME_ERRORS = True
 # HOST - empty string is localhost (unused in sqlite3)
 # PORT - empty string defaults to localhost (unused in sqlite3)
 DATABASES = {
-    "default": {
+    "commands": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": os.getenv("TEST_DB_PATH", os.path.join(GAME_DIR, "server", "evennia.db3")),
         "USER": "",
@@ -284,18 +284,18 @@ ATTRIBUTE_STORED_MODEL_RENAME = [
 # Evennia pluggable modules
 ######################################################################
 # Plugin modules extend Evennia in various ways. In the cases with no
-# existing default, there are examples of many of these modules
+# existing commands, there are examples of many of these modules
 # in contrib/examples.
 
-# The command parser module to use. See the default module for which
+# The command parser module to use. See the commands module for which
 # functions it must implement
 COMMAND_PARSER = "evennia.commands.cmdparser.cmdparser"
 # On a multi-match when search objects or commands, the user has the
 # ability to search again with an index marker that differentiates
 # the results. If multiple "box" objects
-# are found, they can by default be separated as 1-box, 2-box. Below you
+# are found, they can by commands be separated as 1-box, 2-box. Below you
 # can change the regular expression used. The regex must have one
-# have two capturing groups (?P<number>...) and (?P<name>...) - the default
+# have two capturing groups (?P<number>...) and (?P<name>...) - the commands
 # parser expects this. It should also involve a number starting from 1.
 # When changing this you must also update SEARCH_MULTIMATCH_TEMPLATE
 # to properly describe the syntax.
@@ -311,7 +311,7 @@ SEARCH_MULTIMATCH_TEMPLATE = " {name}-{number}{aliases}{info}\n"
 # The handler that outputs errors when using any API-level search
 # (not manager methods). This function should correctly report errors
 # both for command- and object-searches. This allows full control
-# over the error output (it uses SEARCH_MULTIMATCH_TEMPLATE by default).
+# over the error output (it uses SEARCH_MULTIMATCH_TEMPLATE by commands).
 SEARCH_AT_RESULT = "evennia.utils.utils.at_search_result"
 # Single characters to ignore at the beginning of a command. When set, e.g.
 # cmd, @cmd and +cmd will all find a command "cmd" or one named "@cmd" etc. If
@@ -400,7 +400,7 @@ COLOR_XTERM256_EXTRA_GBG = []
 # XTERM256 backgrounds where supported. This is a list of tuples that maps the wanted
 # ansi tag (not a regex!) to a valid XTERM256 background tag, such as `(r'{[r', r'{[500')`.
 COLOR_ANSI_XTERM256_BRIGHT_BG_EXTRA_MAP = []
-# If set True, the above color settings *replace* the default |-style color markdown
+# If set True, the above color settings *replace* the commands |-style color markdown
 # rather than extend it.
 COLOR_NO_DEFAULT = False
 
@@ -426,23 +426,23 @@ CMDSET_ACCOUNT = "commands.default_cmdsets.AccountCmdSet"
 # Location to search for cmdsets if full path not given
 CMDSET_PATHS = ["commands", "evennia", "evennia.contrib"]
 # Fallbacks for cmdset paths that fail to load. Note that if you change the path for your
-# default cmdsets, you will also need to copy CMDSET_FALLBACKS after your change in your
+# commands cmdsets, you will also need to copy CMDSET_FALLBACKS after your change in your
 # settings file for it to detect the change.
 CMDSET_FALLBACKS = {
-    CMDSET_CHARACTER: "evennia.commands.default.cmdset_character.CharacterCmdSet",
-    CMDSET_ACCOUNT: "evennia.commands.default.cmdset_account.AccountCmdSet",
-    CMDSET_SESSION: "evennia.commands.default.cmdset_session.SessionCmdSet",
-    CMDSET_UNLOGGEDIN: "evennia.commands.default.cmdset_unloggedin.UnloggedinCmdSet",
+    CMDSET_CHARACTER: "evennia.commands.commands.cmdset_character.CharacterCmdSet",
+    CMDSET_ACCOUNT: "evennia.commands.commands.cmdset_account.AccountCmdSet",
+    CMDSET_SESSION: "evennia.commands.commands.cmdset_session.SessionCmdSet",
+    CMDSET_UNLOGGEDIN: "evennia.commands.commands.cmdset_unloggedin.UnloggedinCmdSet",
 }
-# Parent class for all default commands. Changing this class will
-# modify all default commands, so do so carefully.
-COMMAND_DEFAULT_CLASS = "evennia.commands.default.muxcommand.MuxCommand"
+# Parent class for all commands commands. Changing this class will
+# modify all commands commands, so do so carefully.
+COMMAND_DEFAULT_CLASS = "evennia.commands.commands.muxcommand.MuxCommand"
 # Command.arg_regex is a regular expression desribing how the arguments
 # to the command must be structured for the command to match a given user
-# input. By default there is no restriction as long as the input string
+# input. By commands there is no restriction as long as the input string
 # starts with the command name.
 COMMAND_DEFAULT_ARG_REGEX = None
-# By default, Command.msg will only send data to the Session calling
+# By commands, Command.msg will only send data to the Session calling
 # the Command in the first place. If set, Command.msg will instead return
 # data to all Sessions connected to the Account/Character associated with
 # calling the Command. This may be more intuitive for users in certain
@@ -450,16 +450,16 @@ COMMAND_DEFAULT_ARG_REGEX = None
 COMMAND_DEFAULT_MSG_ALL_SESSIONS = False
 # The help category of a command if not otherwise specified.
 COMMAND_DEFAULT_HELP_CATEGORY = "general"
-# The default lockstring of a command.
+# The commands lockstring of a command.
 COMMAND_DEFAULT_LOCKS = ""
 # The Channel Handler is responsible for managing all available channels. By
-# default it builds the current channels into a channel-cmdset that it feeds
+# commands it builds the current channels into a channel-cmdset that it feeds
 # to the cmdhandler. Overloading this can completely change how Channels
 # are identified and called.
 CHANNEL_HANDLER_CLASS = "evennia.comms.channelhandler.ChannelHandler"
-# The (default) Channel Handler will create a command to represent each
+# The (commands) Channel Handler will create a command to represent each
 # channel, creating it with the key of the channel, its aliases, locks etc. The
-# default class logs channel messages to a file and allows for /history.  This
+# commands class logs channel messages to a file and allows for /history.  This
 # setting allows to override the command class used with your own.
 # If you implement CHANNEL_HANDLER_CLASS, you can change this directly and will
 # likely not need this setting.
@@ -495,13 +495,13 @@ BASE_CHANNEL_TYPECLASS = "typeclasses.channels.Channel"
 # Typeclass for Scripts (fallback). You usually don't need to change this
 # but create custom variations of scripts on a per-case basis instead.
 BASE_SCRIPT_TYPECLASS = "typeclasses.scripts.Script"
-# The default home location used for all objects. This is used as a
+# The commands home location used for all objects. This is used as a
 # fallback if an object's normal home location is deleted. Default
 # is Limbo (#2).
 DEFAULT_HOME = "#2"
 # The start position for new characters. Default is Limbo (#2).
-#  MULTISESSION_MODE = 0, 1 - used by default unloggedin create command
-#  MULTISESSION_MODE = 2, 3 - used by default character_create command
+#  MULTISESSION_MODE = 0, 1 - used by commands unloggedin create command
+#  MULTISESSION_MODE = 2, 3 - used by commands character_create command
 START_LOCATION = "#2"
 # Lookups of Attributes, Tags, Nicks, Aliases can be aggressively
 # cached to avoid repeated database hits. This often gives noticeable
@@ -624,8 +624,8 @@ GLOBAL_SCRIPTS = {
 # Different Multisession modes allow a player (=account) to connect to the
 # game simultaneously with multiple clients (=sessions). In modes 0,1 there is
 # only one character created to the same name as the account at first login.
-# In modes 2,3 no default character will be created and the MAX_NR_CHARACTERS
-# value (below) defines how many characters the default char_create command
+# In modes 2,3 no commands character will be created and the MAX_NR_CHARACTERS
+# value (below) defines how many characters the commands char_create command
 # allow per account.
 #  0 - single session, one account, one character, when a new session is
 #      connected, the old one is disconnected
@@ -636,7 +636,7 @@ GLOBAL_SCRIPTS = {
 #  3 - like mode 2, except multiple sessions can puppet one character, each
 #      session getting the same data.
 MULTISESSION_MODE = 0
-# The maximum number of characters allowed by the default ooc char-creation command
+# The maximum number of characters allowed by the commands ooc char-creation command
 MAX_NR_CHARACTERS = 1
 # The access hierarchy, in climbing order. A higher permission in the
 # hierarchy includes access of all levels below it. Used by the perm()/pperm()
@@ -649,7 +649,7 @@ PERMISSION_HIERARCHY = [
     "Admin",
     "Developer",
 ]
-# The default permission given to all new accounts
+# The commands permission given to all new accounts
 PERMISSION_ACCOUNT_DEFAULT = "Player"
 # Default sizes for client window (in number of characters), if client
 # is not supplying this on its own
@@ -671,20 +671,20 @@ LOGIN_THROTTLE_TIMEOUT = 5 * 60
 # Guest accounts
 ######################################################################
 
-# This enables guest logins, by default via "connect guest". Note that
+# This enables guest logins, by commands via "connect guest". Note that
 # you need to edit your login screen to inform about this possibility.
 GUEST_ENABLED = False
 # Typeclass for guest account objects (linked to a character)
 BASE_GUEST_TYPECLASS = "typeclasses.accounts.Guest"
 # The permission given to guests
 PERMISSION_GUEST_DEFAULT = "Guests"
-# The default home location used for guests.
+# The commands home location used for guests.
 GUEST_HOME = DEFAULT_HOME
 # The start position used for guest characters.
 GUEST_START_LOCATION = START_LOCATION
 # The naming convention used for creating new guest
 # accounts/characters. The size of this list also determines how many
-# guests may be on the game at once. The default is a maximum of nine
+# guests may be on the game at once. The commands is a maximum of nine
 # guests, named Guest1 through Guest9.
 GUEST_LIST = ["Guest" + str(s + 1) for s in range(9)]
 
@@ -850,7 +850,7 @@ STATICFILES_IGNORE_PATTERNS = ["README.md"]
 # directory names shown in the templates directory.
 WEBSITE_TEMPLATE = "website"
 WEBCLIENT_TEMPLATE = "webclient"
-# The default options used by the webclient
+# The commands options used by the webclient
 WEBCLIENT_OPTIONS = {
     "gagprompt": True,  # Gags prompt from the output window and keep them
     # together with the input bar
@@ -984,13 +984,13 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
-    # default permission checks used by the EvenniaPermission class
+    # commands permission checks used by the EvenniaPermission class
     "DEFAULT_CREATE_PERMISSION": "builder",
     "DEFAULT_LIST_PERMISSION": "builder",
     "DEFAULT_VIEW_LOCKS": ["examine"],
     "DEFAULT_DESTROY_LOCKS": ["delete"],
     "DEFAULT_UPDATE_LOCKS": ["control", "edit"],
-    # No throttle class set by default. Setting one also requires a cache backend to be specified.
+    # No throttle class set by commands. Setting one also requires a cache backend to be specified.
 }
 
 # To enable the REST api, turn this to True
@@ -1073,7 +1073,7 @@ AMP_CLIENT_PROTOCOL_CLASS = "evennia.server.amp_client.AMPServerClientProtocol"
 ######################################################################
 
 # Django extesions are useful third-party tools that are not
-# always included in the default django distro.
+# always included in the commands django distro.
 try:
     import django_extensions  # noqa
 

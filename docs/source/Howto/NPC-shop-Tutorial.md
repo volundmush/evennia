@@ -72,7 +72,7 @@ automatically make the `quit` command available to us so we won't add that manua
 we will put everything needed for our shop in one module, `mygame/typeclasses/npcshop.py`.
 
 ```python
-# mygame/typeclasses/npcshop.py
+db
 
 from evennia.utils import evmenu
 
@@ -112,7 +112,7 @@ which goods will be available to sale so we rely on this node to modify itself d
 circumstances. Let's create it now.
 
 ```python
-# further down in mygame/typeclasses/npcshop.py
+db
 
 def menunode_inspect_and_buy(caller, raw_string):
     "Sets up the buy menu screen."

@@ -107,7 +107,7 @@ class GlobalScriptContainer(Container):
 
     def __init__(self):
         """
-        Note: We must delay loading of typeclasses since this module may get
+        Note: We must delay loading of db since this module may get
         initialized before Scripts are actually initialized.
 
         """
@@ -119,7 +119,7 @@ class GlobalScriptContainer(Container):
     def _get_scripts(self, key=None, default=None):
         global SCRIPTDB
         if not SCRIPTDB:
-            from evennia.scripts.models import ScriptDB as SCRIPTDB
+            from evennia.muxlib.scripts.models import ScriptDB as SCRIPTDB
         if key:
             try:
                 return SCRIPTDB.objects.get(db_key__exact=key, db_obj__isnull=True)
@@ -168,7 +168,7 @@ class GlobalScriptContainer(Container):
     def start(self):
         """
         Called last in evennia.__init__ to initialize the container late
-        (after script typeclasses have finished loading).
+        (after script db have finished loading).
 
         We include all global scripts in the handler and
         make sure to auto-load time-based scripts.

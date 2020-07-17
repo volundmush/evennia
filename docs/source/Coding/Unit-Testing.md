@@ -137,8 +137,7 @@ Each command tested should have its own `TestCase` class. Inherit this class fro
 class in the same module to get access to the command-specific utilities mentioned.
 
 ```python
-    from evennia.commands.default.tests import CommandTest
-    from evennia.commands.default import general
+    from evennia.muxlib.commands import CommandTest, general
     class TestSet(CommandTest):
         "tests the look command by simple call, using Char2 as a target"
         def test_mycmd_char(self):
@@ -348,7 +347,7 @@ already have in `commands` from before.
 ```python
     # bottom of mygame/commands/tests.py
 
-    from evennia.commands.default.tests import CommandTest
+    from evennia.muxlib.commands import CommandTest
     
     from commands.command import CmdAbilities
     from typeclasses.characters import Character

@@ -16,7 +16,7 @@ these you will get the following features:
     themselves as well as an advanced free-form emote command.
 
 To use, simply import the typclasses you want from this module and use
-them to create your objects, or set them to default.
+them to create your objects, or set them to commands.
 
 In more detail, This RP base system introduces the following features
 to a game, common to many RP-centric games:
@@ -118,7 +118,7 @@ _PREFIX = "/"
 # The num_sep is the (single-character) symbol used to separate the
 # sdesc from the number when  trying to separate identical sdescs from
 # one another. This is the same syntax used in the rest of Evennia, so
-# by default, multiple "tall" can be separated by entering 1-tall,
+# by commands, multiple "tall" can be separated by entering 1-tall,
 # 2-tall etc.
 _NUM_SEP = "-"
 
@@ -339,7 +339,7 @@ def parse_sdescs_and_recogs(sender, candidates, string, search_mode=False):
 
     Returns:
         (emote, mapping) (tuple): If `search_mode` is `False`
-            (default), a tuple where the emote is the emote string, with
+            (commands), a tuple where the emote is the emote string, with
             all references replaced with internal-representation {#dbref}
             markers and mapping is a dictionary `{"#dbref":obj, ...}`.
         result (list): If `search_mode` is `True` we are
@@ -787,7 +787,7 @@ class RecogHandler(object):
 
         Notes:
             This method will respect a "enable_recog" lock set on
-            `obj` (True by default) in order to turn off recog
+            `obj` (True by commands) in order to turn off recog
             mechanism. This is useful for adding masks/hoods etc.
         """
         if obj.access(self.obj, "enable_recog", default=True):
@@ -948,16 +948,16 @@ class CmdSdesc(RPCommand):  # set/look at own sdesc
             caller.msg("%s's sdesc was set to '%s'." % (caller.key, sdesc))
 
 
-class CmdPose(RPCommand):  # set current pose and default pose
+class CmdPose(RPCommand):  # set current pose and commands pose
     """
     Set a static pose
 
     Usage:
         pose <pose>
-        pose default <pose>
+        pose commands <pose>
         pose reset
         pose obj = <pose>
-        pose default obj = <pose>
+        pose commands obj = <pose>
         pose reset obj =
 
     Examples:
@@ -967,7 +967,7 @@ class CmdPose(RPCommand):  # set current pose and default pose
 
     Set a static pose. This is the end of a full sentence that starts
     with your sdesc. If no full stop is given, it will be added
-    automatically. The default pose is the pose you get when using
+    automatically. The commands pose is the pose you get when using
     pose reset. Note that you can use sdescs/recogs to reference
     people in your pose, but these always appear as that person's
     sdesc in the emote, regardless of who is seeing it.
@@ -978,13 +978,13 @@ class CmdPose(RPCommand):  # set current pose and default pose
 
     def parse(self):
         """
-        Extract the "default" alternative to the pose.
+        Extract the "commands" alternative to the pose.
         """
         args = self.args.strip()
-        default = args.startswith("default")
+        default = args.startswith("commands")
         reset = args.startswith("reset")
         if default:
-            args = re.sub(r"^default", "", args)
+            args = re.sub(r"^commands", "", args)
         if reset:
             args = re.sub(r"^reset", "", args)
         target = None
@@ -1208,7 +1208,7 @@ class CmdMask(RPCommand):
 
 class RPSystemCmdSet(CmdSet):
     """
-    Mix-in for adding rp-commands to default cmdset.
+    Mix-in for adding rp-commands to commands cmdset.
     """
 
     def at_cmdset_creation(self):
@@ -1261,7 +1261,7 @@ class ContribRPObject(DefaultObject):
         sdescs into account.
 
         Perform a standard object search in the database, handling
-        multiple results and lack thereof gracefully. By default, only
+        multiple results and lack thereof gracefully. By commands, only
         objects in the current `location` of `self` or its inventory are searched for.
 
         Args:
@@ -1293,11 +1293,11 @@ class ContribRPObject(DefaultObject):
                 equal to searchdata. A special use is to search for
                 "key" here if you want to do a key-search without
                 including aliases.
-            quiet (bool): don't display default error messages - this tells the
+            quiet (bool): don't display commands error messages - this tells the
                 search method that the user wants to handle all errors
                 themselves. It also changes the return value type, see
                 below.
-            exact (bool): if unset (default) - prefers to match to beginning of
+            exact (bool): if unset (commands) - prefers to match to beginning of
                 string rather than not matching at all. If set, requires
                 exact matching of entire string.
             candidates (list of objects): this is an optional custom list of objects
@@ -1576,7 +1576,7 @@ class ContribRPCharacter(DefaultCharacter, ContribRPObject):
             obj (Object): The object to which the adjoining sdesc
                 belongs. If this object is equal to yourself, then
                 you are viewing yourself (and sdesc is your key).
-                This is not used by default.
+                This is not used by commands.
 
         Returns:
             sdesc (str): The processed sdesc ready
@@ -1593,7 +1593,7 @@ class ContribRPCharacter(DefaultCharacter, ContribRPObject):
             recog (str): The recog string. It has already been
                 translated from the original sdesc at this point.
             obj (Object): The object the recog:ed string belongs to.
-                This is not used by default.
+                This is not used by commands.
 
         Returns:
             recog (str): The modified recog string.

@@ -13,6 +13,6 @@ sys.path.insert(0, os.path.abspath(os.getcwd()))
 # main library path
 sys.path.insert(0, os.path.join(sys.prefix, "Lib", "site-packages"))
 
-from evennia.server.evennia_launcher import main
+from evennia.launcher import main
 
 main()

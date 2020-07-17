@@ -3,10 +3,8 @@ Test eveditor
 
 """
 
-from mock import MagicMock
-from django.test import TestCase
 from evennia.utils import eveditor
-from evennia.commands.default.tests import CommandTest
+from evennia.muxlib.commands import CommandTest
 
 
 class TestEvEditor(CommandTest):

@@ -7,8 +7,8 @@ from textwrap import dedent
 
 from django.conf import settings
 from evennia import ScriptDB
-from evennia.commands.default.tests import CommandTest
-from evennia.objects.objects import ExitCommand
+from evennia.muxlib.commands import CommandTest
+from evennia.muxlib.objects import ExitCommand
 from evennia.utils import ansi, utils
 from evennia.utils.create import create_object, create_script
 from evennia.utils.test_resources import EvenniaTest
@@ -427,7 +427,7 @@ class TestCmdCallback(CommandTest):
 
 class TestDefaultCallbacks(CommandTest):
 
-    """Test the default callbacks."""
+    """Test the commands callbacks."""
 
     def setUp(self):
         """Create the callback handler."""

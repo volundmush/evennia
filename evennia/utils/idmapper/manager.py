@@ -1,5 +1,5 @@
 """
-IDmapper extension to the default manager.
+IDmapper extension to the commands manager.
 """
 from django.db.models.manager import Manager
 

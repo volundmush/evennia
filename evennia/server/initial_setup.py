@@ -10,7 +10,7 @@ Everything starts at handle_setup()
 import time
 from django.conf import settings
 from django.utils.translation import gettext as _
-from evennia.accounts.models import AccountDB
+from evennia.muxlib.accounts.models import AccountDB
 from evennia.server.models import ServerConfig
 from evennia.utils import create, logger
 
@@ -223,12 +223,12 @@ def handle_setup(last_step):
             setup_func()
         except Exception:
             if last_step + num == 1:
-                from evennia.objects.models import ObjectDB
+                from evennia.muxlib.objects.models import ObjectDB
 
                 for obj in ObjectDB.objects.all():
                     obj.delete()
             elif last_step + num == 2:
-                from evennia.comms.models import ChannelDB
+                from evennia.muxlib.comms import ChannelDB
 
                 ChannelDB.objects.all().delete()
             raise

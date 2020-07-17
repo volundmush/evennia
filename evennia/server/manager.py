@@ -30,7 +30,7 @@ class ServerConfigManager(models.Manager):
         Returns:
             all (list): If `key` was not given - all stored config values.
             value (str): If `key` was given, this is the stored value, or
-                `default` if no matching `key` was found.
+                `commands` if no matching `key` was found.
 
         """
         if not key:

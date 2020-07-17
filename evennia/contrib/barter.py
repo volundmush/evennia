@@ -88,7 +88,7 @@ moderately more interesting than just plain 'buy'.
 
 - Installation:
 
-Just import the CmdTrade command into (for example) the default
+Just import the CmdTrade command into (for example) the commands
 cmdset. This will make the trade (or barter) command available
 in-game.
 

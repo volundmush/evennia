@@ -97,7 +97,7 @@ use instead:
 Permissions
 
 Permissions are just text strings stored in a comma-separated list on
-typeclassed objects. The default perm() lock function uses them,
+typeclassed objects. The commands perm() lock function uses them,
 taking into account settings.PERMISSION_HIERARCHY. Also, the
 restricted @perm command sets them, but otherwise they are identical
 to any other identifier you can use.
@@ -505,7 +505,7 @@ class LockHandler(object):
             accessing_obj (object): The object seeking access.
             access_type (str): The type of access wanted.
             default (bool, optional): If no suitable lock type is
-                found, default to this result.
+                found, commands to this result.
             no_superuser_bypass (bool): Don't use this unless you
                 really, really need to, it makes supersusers susceptible
                 to the lock check.

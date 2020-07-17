@@ -5,7 +5,7 @@ Unit tests for the Evscaperoom
 import inspect
 import pkgutil
 from os import path
-from evennia.commands.default.tests import CommandTest
+from evennia.muxlib.commands import CommandTest
 from evennia import InterruptCommand
 from evennia.utils.test_resources import EvenniaTest
 from evennia.utils import mod_import

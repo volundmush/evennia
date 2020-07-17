@@ -11,9 +11,9 @@ from django.db.models import Q
 from django_filters.rest_framework.filterset import FilterSet
 from django_filters.filters import CharFilter, EMPTY_VALUES
 
-from evennia.objects.models import ObjectDB
-from evennia.accounts.models import AccountDB
-from evennia.scripts.models import ScriptDB
+from evennia.muxlib.objects.models import ObjectDB
+from evennia.muxlib.accounts.models import AccountDB
+from evennia.muxlib.scripts.models import ScriptDB
 
 
 def get_tag_query(tag_type: Union[str, None], key: str) -> Q:

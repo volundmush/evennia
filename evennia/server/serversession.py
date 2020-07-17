@@ -9,13 +9,13 @@ are stored on the Portal side)
 import time
 from django.utils import timezone
 from django.conf import settings
-from evennia.comms.models import ChannelDB
+from evennia.muxlib.comms import ChannelDB
 from evennia.utils import logger
 from evennia.utils.utils import make_iter, lazy_property
 from evennia.commands.cmdsethandler import CmdSetHandler
 from evennia.server.session import Session
-from evennia.scripts.monitorhandler import MONITOR_HANDLER
-from evennia.typeclasses.attributes import AttributeHandler, InMemoryAttributeBackend, DbHolder
+from evennia.muxlib.scripts import MONITOR_HANDLER
+from evennia.db.attributes import AttributeHandler, InMemoryAttributeBackend, DbHolder
 
 _GA = object.__getattribute__
 _SA = object.__setattr__
@@ -23,7 +23,6 @@ _ObjectDB = None
 _ANSI = None
 
 # i18n
-from django.utils.translation import gettext as _
 
 
 # -------------------------------------------------------------
@@ -73,7 +72,7 @@ class ServerSession(Session):
         """
         global _ObjectDB
         if not _ObjectDB:
-            from evennia.objects.models import ObjectDB as _ObjectDB
+            from evennia.muxlib.objects.models import ObjectDB as _ObjectDB
 
         super(ServerSession, self).at_sync()
         if not self.logged_in:

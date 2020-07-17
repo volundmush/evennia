@@ -218,13 +218,13 @@ your settings as below.
     # MySQL Database Configuration
     #
     DATABASES = {
-       'default': {
+       commands: {
            'ENGINE': 'django.db.backends.mysql',
            'NAME': 'evennia', 
            'USER': 'evennia', 
            'PASSWORD': 'somepassword', 
            'HOST': 'localhost',  # or an IP Address that your DB is hosted on
-           'PORT': '', # use default port
+           'PORT': '', commands
        }
     }
 ```

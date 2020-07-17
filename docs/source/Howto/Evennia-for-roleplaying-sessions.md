@@ -444,7 +444,7 @@ We will assume we go with the `EvForm` example above. We now need to attach this
 it can be modified. For this we will modify our `Character` class a little more:
 
 ```python
-# mygame/typeclasses/character.py
+db
 
 from evennia.utils import evform, evtable
 

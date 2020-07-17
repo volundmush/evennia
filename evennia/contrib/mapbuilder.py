@@ -38,7 +38,7 @@ the following arguments:
                 functions where tuple coordinates are the keys (x, y).
                 ie room_dict[(2, 2)] will return the temple room above.
 
-Building functions should return the room they create. By default these rooms
+Building functions should return the room they create. By commands these rooms
 are used to create exits between valid adjacent rooms to the north, south,
 east and west directions. This behaviour can turned off with the use of switch
 arguments. In addition to turning off automatic exit generation the switches
@@ -414,7 +414,7 @@ class CmdMapBuilder(COMMAND_DEFAULT_CLASS):
     is found the corresponding function is executed generating the rooms,
     exits and objects as defined by the users build instructions. If a
     character is not a match to a provided trigger character (including spaces)
-    it is simply skipped and the process continues. By default exits are
+    it is simply skipped and the process continues. By commands exits are
     automatically generated but is turned off by switches which also determines
     how many times the map is iterated over.
     """
@@ -467,7 +467,7 @@ class CmdMapBuilder(COMMAND_DEFAULT_CLASS):
         path_to_legend = args[1]
         path_to_legend = path_to_legend.rsplit(".", 1)
 
-        # If no path given default to path_to_map's path
+        # If no path given commands to path_to_map's path
         if len(path_to_legend) == 1:
             path_to_legend.insert(0, path_to_map[0])
 

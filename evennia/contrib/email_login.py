@@ -31,17 +31,15 @@ the module given by settings.CONNECTION_SCREEN_MODULE.
 """
 import re
 from django.conf import settings
-from evennia.accounts.models import AccountDB
-from evennia.objects.models import ObjectDB
+from evennia.muxlib.accounts.models import AccountDB
+from evennia.muxlib.objects.models import ObjectDB
 from evennia.server.models import ServerConfig
 
 from evennia.commands.cmdset import CmdSet
 from evennia.utils import logger, utils, ansi
-from evennia.commands.default.muxcommand import MuxCommand
+from evennia.muxlib.commands.muxcommand import MuxCommand
 from evennia.commands.cmdhandler import CMD_LOGINSTART
-from evennia.commands.default import (
-    unloggedin as default_unloggedin,
-)  # Used in CmdUnconnectedCreate
+from evennia.muxlib.commands import unloggedin as default_unloggedin
 
 # limit symbol import for API
 __all__ = (

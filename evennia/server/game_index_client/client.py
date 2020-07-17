@@ -4,7 +4,6 @@ The client for sending data to the Evennia Game Index
 """
 import urllib.request, urllib.parse, urllib.error
 import platform
-import warnings
 
 import django
 from django.conf import settings
@@ -17,7 +16,7 @@ from twisted.web.http_headers import Headers
 from twisted.web.iweb import IBodyProducer
 from zope.interface import implementer
 
-from evennia.accounts.models import AccountDB
+from evennia.muxlib.accounts.models import AccountDB
 from evennia.server.sessionhandler import SESSIONS
 from evennia.utils import get_evennia_version, logger
 

@@ -271,7 +271,7 @@ def median(self, num):
 def start_loc_on_grid(self):
     x = self.median(self.max_width)
     y = self.median(self.max_length)
-    # x and y are floats by default, can't index lists with float types
+    commands
     x, y = int(x), int(y) 
 
     self.grid[x][y] = SYMBOLS['you']

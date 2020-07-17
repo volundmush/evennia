@@ -3,14 +3,14 @@ Object
 
 The Object is the "naked" base class for things in the game world.
 
-Note that the default Character, Room and Exit does not inherit from
-this Object, but from their respective default implementations in the
+Note that the commands Character, Room and Exit does not inherit from
+this Object, but from their respective commands implementations in the
 evennia library. If you want to use this class as a parent to change
 the other types, you can do so by adding this as a multiple
 inheritance.
 
 """
-from evennia import DefaultObject
+from evennia.muxlib.objects.objects import DefaultObject
 
 
 class Object(DefaultObject):
@@ -81,7 +81,7 @@ class Object(DefaultObject):
      delete()
      is_typeclass(typeclass, exact=False)
      swap_typeclass(new_typeclass, clean_attributes=False, no_default=True)
-     access(accessing_obj, access_type='read', default=False)
+     access(accessing_obj, access_type='read', commands=False)
      check_permstring(permstring)
 
     * Hooks (these are class methods, so args should start with self):
@@ -135,7 +135,7 @@ class Object(DefaultObject):
      at_traverse(traversing_object, source_loc) - (exit-objects only)
                               handles all moving across the exit, including
                               calling the other exit hooks. Use super() to retain
-                              the default functionality.
+                              the commands functionality.
      at_after_traverse(traversing_object, source_location) - (exit-objects only)
                               called just after a traversal has happened.
      at_failed_traverse(traversing_object)      - (exit-objects only) called if
@@ -148,13 +148,13 @@ class Object(DefaultObject):
                              sends a message to someone via self.msg().
 
      return_appearance(looker) - describes this object. Used by "look"
-                                 command by default
+                                 command by commands
      at_desc(looker=None)      - called by 'look' whenever the
                                  appearance is requested.
      at_get(getter)            - called after object has been picked up.
                                  Does not stop pickup.
      at_drop(dropper)          - called when this object has been dropped.
-     at_say(speaker, message)  - by default, called if an object inside this
+     at_say(speaker, message)  - by commands, called if an object inside this
                                  object speaks
 
      """

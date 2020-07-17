@@ -44,7 +44,7 @@ in your game and using it as-is.
 
 from random import randint
 from evennia import DefaultCharacter, Command, default_cmds, DefaultScript
-from evennia.commands.default.help import CmdHelp
+from evennia.muxlib.commands import CmdHelp
 
 """
 ----------------------------------------------------------------------------

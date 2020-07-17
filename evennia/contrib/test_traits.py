@@ -179,7 +179,7 @@ class TestTrait(_TraitHandlerBase):
         expected = copy(dat)  # we must break link or return === dat always
         self.assertEqual(expected, traits.Trait.validate_input(traits.Trait, dat))
 
-        # don't supply value, should get default
+        # don't supply value, should get commands
         dat = {
             "name": "Test",
             "trait_type": "trait",
@@ -255,7 +255,7 @@ class TestTrait(_TraitHandlerBase):
         with self.assertRaises(AttributeError):
             self.trait.extra_val1
         del self.trait.value
-        # fall back to default
+        # fall back to commands
         self.assertTrue(self.trait.value == traits.Trait.default_keys["value"])
 
     def test_repr(self):
@@ -306,7 +306,7 @@ class TestTraitStatic(_TraitHandlerBase):
         self.assertEqual(self._get_values(), (5, 1, 6))
 
     def test_delete(self):
-        """Deleting resets to default."""
+        """Deleting resets to commands."""
         del self.trait.base
         self.assertEqual(self._get_values(), (0, 2, 2))
         del self.trait.mod
@@ -441,7 +441,7 @@ class TestTraitCounter(_TraitHandlerBase):
         self.assertEqual(self._get_values(), (1, 2, 2, 0, 10))
 
     def test_delete(self):
-        """Deleting resets to default."""
+        """Deleting resets to commands."""
         del self.trait.base
         self.assertEqual(self._get_values(), (0, 2, 2, 0, 10))
         del self.trait.mod
@@ -705,7 +705,7 @@ class TestTraitGauge(_TraitHandlerBase):
         self.assertEqual(self._get_values(), (10, 2, 0, 0, 12))
 
     def test_delete(self):
-        """Deleting resets to default."""
+        """Deleting resets to commands."""
         del self.trait.mod
         self.assertEqual(self._get_values(), (8, 0, 8, 0, 8))
         self.trait.mod = 2

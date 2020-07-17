@@ -18,11 +18,11 @@ An input function must have the following call signature:
 Where session will be the active session and *args, **kwargs are extra
 incoming arguments and keyword properties.
 
-A special command is the "default" command, which is will be called
+A special command is the "commands" command, which is will be called
 when no other cmdname matches. It also receives the non-found cmdname
 as argument.
 
-    default(session, cmdname, *args, **kwargs)
+    commands(session, cmdname, *args, **kwargs)
 
 """
 
@@ -39,7 +39,7 @@ as argument.
 #     session.msg(oob=("echo", args, kwargs))
 #
 #
-# def default(session, cmdname, *args, **kwargs):
+# def commands(session, cmdname, *args, **kwargs):
 #     """
 #     Handles commands without a matching inputhandler func.
 #

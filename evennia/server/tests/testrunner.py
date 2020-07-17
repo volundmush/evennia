@@ -6,7 +6,6 @@ Runs as part of the Evennia's test suite with 'evennia test evennia"
 
 """
 from django.test.runner import DiscoverRunner
-from unittest import mock
 
 
 class EvenniaTestSuiteRunner(DiscoverRunner):
@@ -25,7 +24,7 @@ class EvenniaTestSuiteRunner(DiscoverRunner):
         # the portal looping call starts before the unit-test suite so we
         # can't mock it - instead we stop it before starting the test - otherwise
         # we'd get unclean reactor errors across test boundaries.
-        from evennia.server.portal.portal import PORTAL
+        from evennia.portal import PORTAL
         PORTAL.maintenance_task.stop()
 
         import evennia

@@ -215,7 +215,7 @@ from web.chargen.models import CharApp
 from web.chargen.forms import AppForm
 from django.http import HttpResponseRedirect
 from datetime import datetime
-from evennia.objects.models import ObjectDB
+from evennia.muxlib.objects.models import ObjectDB
 from django.conf import settings
 from evennia.utils import create
 
@@ -283,7 +283,7 @@ from web.chargen.models import CharApp
 from web.chargen.forms import AppForm
 from django.http import HttpResponseRedirect
 from datetime import datetime
-from evennia.objects.models import ObjectDB
+from evennia.muxlib.objects.models import ObjectDB
 from django.conf import settings
 from evennia.utils import create
 
@@ -382,7 +382,7 @@ change it to include:
 
 from django.conf.urls import url, include
 
-# default evennia patterns
+commands
 from evennia.web.urls import urlpatterns
 
 # eventual custom patterns

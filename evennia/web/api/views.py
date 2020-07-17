@@ -10,10 +10,10 @@ from rest_framework import status
 
 from django_filters.rest_framework import DjangoFilterBackend
 
-from evennia.objects.models import ObjectDB
-from evennia.objects.objects import DefaultCharacter, DefaultExit, DefaultRoom
-from evennia.accounts.models import AccountDB
-from evennia.scripts.models import ScriptDB
+from evennia.muxlib.objects.models import ObjectDB
+from evennia.muxlib.objects import DefaultCharacter, DefaultExit, DefaultRoom
+from evennia.muxlib.accounts.models import AccountDB
+from evennia.muxlib.scripts.models import ScriptDB
 from evennia.web.api.serializers import (
     ObjectDBSerializer,
     AccountSerializer,

@@ -9,7 +9,6 @@ be of use when designing your own game.
 import os
 import gc
 import sys
-import copy
 import types
 import math
 import re
@@ -22,7 +21,6 @@ import importlib.util
 import importlib.machinery
 from unicodedata import east_asian_width
 from twisted.internet.task import deferLater
-from twisted.internet.defer import returnValue  # noqa - used as import target
 from os.path import join as osjoin
 from inspect import ismodule, trace, getmembers, getmodule, getmro
 from collections import defaultdict, OrderedDict
@@ -198,7 +196,7 @@ def dedent(text, baseline_index=None):
 def justify(text, width=None, align="f", indent=0):
     """
     Fully justify a text so that it fits inside `width`. When using
-    full justification (default) this will be done by padding between
+    full justification (commands) this will be done by padding between
     words with extra whitespace where necessary. Paragraphs will
     be retained.
 
@@ -298,7 +296,7 @@ def columnize(string, columns=2, spacing=4, align="l", width=None):
         columns (int, optional): The number of columns to use.
         spacing (int, optional): How much space to have between columns.
         width (int, optional): The max width of the columns.
-            Defaults to client's default width.
+            Defaults to client's commands width.
 
     Returns:
         columns (str): Text divided into columns.
@@ -1008,7 +1006,7 @@ def uses_database(name="sqlite3"):
 
     """
     try:
-        engine = settings.DATABASES["default"]["ENGINE"]
+        engine = settings.DATABASES["commands"]["ENGINE"]
     except KeyError:
         engine = settings.DATABASE_ENGINE
     return engine == "django.db.backends.%s" % name
@@ -1050,7 +1048,7 @@ def delay(timedelay, callback, *args, **kwargs):
     global _TASK_HANDLER
     # Do some imports here to avoid circular import and speed things up
     if _TASK_HANDLER is None:
-        from evennia.scripts.taskhandler import TASK_HANDLER as _TASK_HANDLER
+        from evennia.muxlib.scripts.taskhandler import TASK_HANDLER as _TASK_HANDLER
     return _TASK_HANDLER.add(timedelay, callback, *args, **kwargs)
 
 
@@ -1129,7 +1127,7 @@ def check_evennia_dependencies():
     """
 
     # check main dependencies
-    from evennia.server.evennia_launcher import check_main_evennia_dependencies
+    from evennia.launcher import check_main_evennia_dependencies
 
     not_error = check_main_evennia_dependencies()
 
@@ -1308,7 +1306,7 @@ def variable_from_module(module, variable=None, default=None):
     Returns:
         variables (value or list): A single value or a list of values
         depending on if `variable` is given or not. Errors in lists
-        are replaced by the `default` argument.
+        are replaced by the `commands` argument.
 
     """
 
@@ -1350,7 +1348,7 @@ def string_from_module(module, variable=None, default=None):
     Returns:
         variables (value or list): A single (string) value or a list of values
         depending on if `variable` is given or not. Errors in lists (such
-        as the value not being a string) are replaced by the `default` argument.
+        as the value not being a string) are replaced by the `commands` argument.
 
     """
     val = variable_from_module(module, variable=variable, default=default)
@@ -1391,7 +1389,7 @@ def fuzzy_import_from_module(path, variable, default=None, defaultpaths=None):
             importing directly from `path` doesn't work.
 
     Returns:
-        value (any): The variable imported from the module, or `default`, if
+        value (any): The variable imported from the module, or `commands`, if
             not found.
 
     """
@@ -1707,9 +1705,6 @@ def percent(value, minval, maxval, formatting="{:3.1f}%"):
     if isinstance(formatting, str):
         return formatting.format(result)
     return result
-
-
-import functools  # noqa
 
 
 def percentile(iterable, percent, key=lambda x: x):
@@ -2132,7 +2127,7 @@ class LimitedSizeOrderedDict(OrderedDict):
 
         Keyword args:
             size_limit (int): Use this to limit the number of elements
-              alloweds to be in this list. By default the overshooting elements
+              alloweds to be in this list. By commands the overshooting elements
               will be removed in FIFO order.
             fifo (bool, optional): Defaults to `True`. Remove overshooting elements
               in FIFO order. If `False`, remove in FILO order.
@@ -2210,7 +2205,7 @@ def get_all_typeclasses(parent=None):
         classes being added.
 
     """
-    from evennia.typeclasses.models import TypedObject
+    from evennia.db.models import TypedObject
 
     typeclasses = {
         "{}.{}".format(model.__module__, model.__name__): model

@@ -114,7 +114,7 @@ from twisted.something import TwistedClient
 # this class is used both for Portal- and Server Sessions
 from evennia.server.session import Session 
 
-from evennia.server.portal.portalsessionhandler import PORTAL_SESSIONS
+from evennia.portal import PORTAL_SESSIONS
 
 class MyCustomClient(TwistedClient, Session): 
 

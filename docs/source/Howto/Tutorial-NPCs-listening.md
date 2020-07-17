@@ -11,7 +11,7 @@ the [Basic Game tutorial](Starting/Part3/Tutorial-for-basic-MUSH-like-game) if y
 What we will need is simply a new NPC typeclass that can react when someone speaks.
 
 ```python
-# mygame/typeclasses/npc.py
+db
 
 from characters import Character
 class Npc(Character):

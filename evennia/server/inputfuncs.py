@@ -24,7 +24,6 @@ import importlib
 from codecs import lookup as codecs_lookup
 from django.conf import settings
 from evennia.commands.cmdhandler import cmdhandler
-from evennia.accounts.models import AccountDB
 from evennia.utils.logger import log_err
 from evennia.utils.utils import to_str
 
@@ -288,7 +287,7 @@ def login(session, *args, **kwargs):
 
     """
     if not session.logged_in and "name" in kwargs and "password" in kwargs:
-        from evennia.commands.default.unloggedin import create_normal_account
+        from evennia.muxlib.commands.unloggedin import create_normal_account
 
         account = create_normal_account(session, kwargs["name"], kwargs["password"])
         if account:
@@ -353,7 +352,7 @@ def repeat(session, *args, **kwargs):
             the above settings.
 
     """
-    from evennia.scripts.tickerhandler import TICKER_HANDLER
+    from evennia.muxlib.scripts.tickerhandler import TICKER_HANDLER
 
     name = kwargs.get("callback", "")
     interval = max(5, int(kwargs.get("interval", 60)))
@@ -414,7 +413,7 @@ def monitor(session, *args, **kwargs):
         has its own specific output format.
 
     """
-    from evennia.scripts.monitorhandler import MONITOR_HANDLER
+    from evennia.muxlib.scripts import MONITOR_HANDLER
 
     name = kwargs.get("name", None)
     outputfunc_name = kwargs("outputfunc_name", "monitor")
@@ -450,7 +449,7 @@ def monitored(session, *args, **kwargs):
     Report on what is being monitored
 
     """
-    from evennia.scripts.monitorhandler import MONITOR_HANDLER
+    from evennia.muxlib.scripts import MONITOR_HANDLER
 
     obj = session.puppet
     monitors = MONITOR_HANDLER.all(obj=obj)
@@ -510,7 +509,7 @@ def webclient_options(session, *args, **kwargs):
 
         # Create a monitor. If a monitor already exists then it will replace
         # the previous one since it would use the same idstring
-        from evennia.scripts.monitorhandler import MONITOR_HANDLER
+        from evennia.muxlib.scripts import MONITOR_HANDLER
 
         MONITOR_HANDLER.add(
             account,
@@ -543,7 +542,7 @@ def msdp_list(session, *args, **kwargs):
     MSDP LIST command
 
     """
-    from evennia.scripts.monitorhandler import MONITOR_HANDLER
+    from evennia.muxlib.scripts import MONITOR_HANDLER
 
     args_lower = [arg.lower() for arg in args]
     if "commands" in args_lower:

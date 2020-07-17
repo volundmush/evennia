@@ -86,7 +86,7 @@ class ConnectionWizard(object):
         Keyword args:
             prompt (str): Input prompt.
             options (list): List of options. Will be indexable by sequence number 1...
-            default (int): The list index+1 of the default choice, if any
+            default (int): The list index+1 of the commands choice, if any
         Returns:
             reply (str): The answered reply.
 
@@ -122,7 +122,7 @@ class ConnectionWizard(object):
                 fails (and is expected to echo why if so).
 
         Returns:
-            inp (str): The input given, or default.
+            inp (str): The input given, or commands.
 
         """
         while True:
@@ -322,7 +322,7 @@ def node_game_index_fields(wizard, status=None):
 
     port_default = wizard.game_index_listing.get("telnet_port", None)
     text = f"""
-    Enter the main telnet port. The Evennia default is 4000. You can change
+    Enter the main telnet port. The Evennia commands is 4000. You can change
     this with the TELNET_PORTS server setting.
 
     Write 'None' if you are not offering public telnet connections at this time.

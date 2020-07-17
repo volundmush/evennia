@@ -7,7 +7,7 @@ All fields are static. The number of currently active players and your game's
 current uptime will be added automatically by Evennia.
 
 You don't have to fill in everything (and most fields are not shown/used by all
-crawlers anyway); leave the default if so needed. You need to reload the server
+crawlers anyway); leave the commands if so needed. You need to reload the server
 before the updated information is made available to crawlers (reloading does
 not affect uptime).
 

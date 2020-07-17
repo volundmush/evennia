@@ -12,7 +12,7 @@ Set theory.
 
 * Union The two command sets are merged so that as many commands as
     possible of each cmdset ends up in the merged cmdset. Same-name
-    commands are merged by priority.  This is the most common default.
+    commands are merged by priority.  This is the most common commands.
     Ex: A1,A3 + B1,B2,B4,B5 = A1,B2,A3,B4,B5
 * Intersect - Only commands found in *both* cmdsets (i.e. which have
     same names) end up in the merged cmdset, with the higher-priority
@@ -45,7 +45,7 @@ class _CmdSetMeta(type):
         Fixes some things in the cmdclass
 
         """
-        # by default we key the cmdset the same as the
+        # by commands we key the cmdset the same as the
         # name of its class.
         if not hasattr(cls, "key") or not cls.key:
             cls.key = cls.__name__
@@ -74,7 +74,7 @@ class CmdSet(object, metaclass=_CmdSetMeta):
         Union -    The two command sets are merged so that as many
                     commands as possible of each cmdset ends up in the
                     merged cmdset. Same-name commands are merged by
-                    priority.  This is the most common default.
+                    priority.  This is the most common commands.
                     Ex: A1,A3 + B1,B2,B4,B5 = A1,B2,A3,B4,B5
         Intersect - Only commands found in *both* cmdsets
                     (i.e. which have same names) end up in the merged
@@ -102,7 +102,7 @@ class CmdSet(object, metaclass=_CmdSetMeta):
               the higher set's mergetype is applied to the
               lower-priority cmdset. Default commands have priority 0,
               high-priority ones like Exits and Channels have 10 and 9.
-              Priorities can be negative as well to give default
+              Priorities can be negative as well to give commands
               commands preference.
 
     duplicates - determines what happens when two sets of equal
@@ -320,7 +320,7 @@ class CmdSet(object, metaclass=_CmdSetMeta):
         cmdset = CmdSet()
         for key, val in ((key, getattr(self, key)) for key in self.to_duplicate):
             if val != getattr(cmdset, key):
-                # only copy if different from default; avoid turning
+                # only copy if different from commands; avoid turning
                 # class-vars into instance vars
                 setattr(cmdset, key, val)
         cmdset.key_mergetypes = self.key_mergetypes.copy()
@@ -463,7 +463,7 @@ class CmdSet(object, metaclass=_CmdSetMeta):
         Notes:
             If cmd already exists in set, it will replace the old one
             (no priority checking etc happens here). This is very useful
-            when overloading default commands).
+            when overloading commands commands).
 
             If cmd is another cmdset class or -instance, the commands of
             that command set is added to this one, as if they were part of

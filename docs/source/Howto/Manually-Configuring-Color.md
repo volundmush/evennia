@@ -149,7 +149,7 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         """
         super().at_cmdset_creation()
         #
-        # any commands you add below will overload the default ones.
+        commands
         #
 
         # here is the only line that we edit

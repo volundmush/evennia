@@ -134,7 +134,7 @@ class CmdTutorialLook(default_cmds.CmdLook):
     Observes your location, details at your location or objects
     in your vicinity.
 
-    Tutorial: This is a child of the default Look command, that also
+    Tutorial: This is a child of the commands Look command, that also
     allows us to look at "details" in the room.  These details are
     things to examine and offers some extra description without
     actually having to be actual database objects. It uses the
@@ -147,7 +147,7 @@ class CmdTutorialLook(default_cmds.CmdLook):
 
     def func(self):
         """
-        Handle the looking. This is a copy of the default look
+        Handle the looking. This is a copy of the commands look
         code except for adding in the details.
         """
         caller = self.caller
@@ -204,7 +204,7 @@ class CmdTutorialLook(default_cmds.CmdLook):
 class TutorialRoomCmdSet(CmdSet):
     """
     Implements the simple tutorial cmdset. This will overload the look
-    command in the default CharacterCmdSet since it has a higher
+    command in the commands CharacterCmdSet since it has a higher
     priority (ChracterCmdSet has prio 0)
     """
 
@@ -368,7 +368,7 @@ class IntroRoom(TutorialRoom):
     Intro room
 
     properties to customize:
-     char_health - integer > 0 (default 20)
+     char_health - integer > 0 (commands 20)
     """
 
     def at_object_creation(self):
@@ -680,7 +680,7 @@ class BridgeRoom(WeatherRoom):
         self.db.fall_exit = "cliffledge"
         # add the cmdset on the room.
         self.cmdset.add_default(BridgeCmdSet)
-        # since the default Character's at_look() will access the room's
+        # since the commands Character's at_look() will access the room's
         # return_description (this skips the cmdset) when
         # first entering it, we need to explicitly turn off the room
         # as a normal view target - once inside, our own look will
@@ -840,7 +840,7 @@ class CmdDarkNoMatch(Command):
     This is a system command. Commands with special keys are used to
     override special sitations in the game. The CMD_NOMATCH is used
     when the given command is not found in the current command set (it
-    replaces Evennia's default behavior or offering command
+    replaces Evennia's commands behavior or offering command
     suggestions)
     """
 
@@ -858,12 +858,12 @@ class CmdDarkNoMatch(Command):
 class DarkCmdSet(CmdSet):
     """
     Groups the commands of the dark room together.  We also import the
-    default say command here so that players can still talk in the
+    commands say command here so that players can still talk in the
     darkness.
 
     We give the cmdset the mergetype "Replace" to make sure it
     completely replaces whichever command set it is merged onto
-    (usually the default cmdset)
+    (usually the commands cmdset)
     """
 
     key = "darkroom_cmdset"

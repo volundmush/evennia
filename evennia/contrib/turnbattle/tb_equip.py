@@ -34,7 +34,7 @@ your game's character.py module:
     from evennia.contrib.turnbattle.tb_equip import TBEquipCharacter
 
 And change your game's character typeclass to inherit from TBEquipCharacter
-instead of the default:
+instead of the commands:
 
     class Character(TBEquipCharacter):
 
@@ -42,10 +42,10 @@ Next, import this module into your default_cmdsets.py module:
 
     from evennia.contrib.turnbattle import tb_equip
 
-And add the battle command set to your default command set:
+And add the battle command set to your commands command set:
 
     #
-    # any commands you add below will overload the default ones.
+    # any commands you add below will overload the commands ones.
     #
     self.add(tb_equip.BattleCmdSet())
 
@@ -56,7 +56,7 @@ in your game and using it as-is.
 
 from random import randint
 from evennia import DefaultCharacter, Command, default_cmds, DefaultScript, DefaultObject
-from evennia.commands.default.help import CmdHelp
+from evennia.muxlib.commands import CmdHelp
 
 """
 ----------------------------------------------------------------------------
@@ -86,7 +86,7 @@ def roll_init(character):
         numbers go first.
 
     Notes:
-        By default, does not reference the character and simply returns
+        By commands, does not reference the character and simply returns
         a random integer from 1 to 1000.
 
         Since the character is passed to this function, you can easily reference
@@ -148,7 +148,7 @@ def get_defense(attacker, defender):
             to determine whether an attack hits or misses.
 
     Notes:
-        Characters are given a default defense value of 50 which can be
+        Characters are given a commands defense value of 50 which can be
         modified up or down by armor. In this example, wearing armor actually
         makes you a little easier to hit, but reduces incoming damage.
     """
@@ -223,7 +223,7 @@ def at_defeat(defeated):
         defeated (obj): Fighter that's been defeated.
 
     Notes:
-        All this does is announce a defeat message by default, but if you
+        All this does is announce a defeat message by commands, but if you
         want anything else to happen to defeated fighters (like putting them
         into a dying state or something similar) then this is the place to
         do it.
@@ -643,7 +643,7 @@ class TBEquipCharacter(DefaultCharacter):
 
         """
         Adds attributes for a character's current and maximum HP.
-        We're just going to set this value at '100' by default.
+        We're just going to set this value at '100' by commands.
 
         You may want to expand this to include various 'stats' that
         can be changed at creation and factor into combat calculations.
@@ -885,7 +885,7 @@ class CmdCombatHelp(CmdHelp):
     topics related to the game.
     """
 
-    # Just like the default help command, but will give quick
+    # Just like the commands help command, but will give quick
     # tips on combat when used in a fight with no arguments.
 
     def func(self):
@@ -897,7 +897,7 @@ class CmdCombatHelp(CmdHelp):
                 + "|wDisengage:|n End your turn and attempt to end combat.|/"
             )
         else:
-            super().func()  # Call the default help command
+            super().func()  # Call the commands help command
 
 
 class CmdWield(Command):

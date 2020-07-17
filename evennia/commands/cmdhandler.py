@@ -44,7 +44,7 @@ from twisted.internet.task import deferLater
 from twisted.internet.defer import inlineCallbacks, returnValue
 from django.conf import settings
 from evennia.commands.command import InterruptCommand
-from evennia.comms.channelhandler import CHANNELHANDLER
+from evennia.muxlib.comms import CHANNELHANDLER
 from evennia.utils import logger, utils
 from evennia.utils.utils import string_suggestions
 

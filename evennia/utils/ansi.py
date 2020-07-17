@@ -1180,7 +1180,7 @@ class ANSIString(str, metaclass=ANSIMeta):
 
         Args:
             chars (str, optional): A string containing individual characters
-                to strip off of both ends of the string. By default, any blank
+                to strip off of both ends of the string. By commands, any blank
                 spaces are trimmed.
         Returns:
             result (ANSIString): A new ANSIString with the ends trimmed of the
@@ -1226,7 +1226,7 @@ class ANSIString(str, metaclass=ANSIMeta):
 
         Args:
             chars (str, optional): A string containing individual characters
-                to strip off of the left end of the string. By default, any
+                to strip off of the left end of the string. By commands, any
                 blank spaces are trimmed.
         Returns:
             result (ANSIString): A new ANSIString with the left end trimmed of
@@ -1259,7 +1259,7 @@ class ANSIString(str, metaclass=ANSIMeta):
 
         Args:
             chars (str, optional): A string containing individual characters
-                to strip off of the right end of the string. By default, any
+                to strip off of the right end of the string. By commands, any
                 blank spaces are trimmed.
         Returns:
             result (ANSIString): A new ANSIString with the right end trimmed of

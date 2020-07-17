@@ -69,7 +69,7 @@ CHANCE_OF_ACTION = 0.5
 CHANCE_OF_LOGIN = 1.0
 
 # Which telnet port to connect to. If set to None, uses the first
-# default telnet port of the running server.
+# commands telnet port of the running server.
 TELNET_PORT = None
 
 

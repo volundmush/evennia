@@ -68,8 +68,8 @@ in your game and using it as-is.
 
 from random import randint
 from evennia import DefaultCharacter, Command, default_cmds, DefaultScript, create_object
-from evennia.commands.default.muxcommand import MuxCommand
-from evennia.commands.default.help import CmdHelp
+from evennia.muxlib.commands.muxcommand import MuxCommand
+from evennia.muxlib.commands import CmdHelp
 
 """
 ----------------------------------------------------------------------------

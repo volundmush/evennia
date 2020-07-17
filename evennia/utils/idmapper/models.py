@@ -427,7 +427,7 @@ class SharedMemoryModel(Model, metaclass=SharedMemoryModelBase):
         """
         global _MONITOR_HANDLER
         if not _MONITOR_HANDLER:
-            from evennia.scripts.monitorhandler import MONITOR_HANDLER as _MONITOR_HANDLER
+            from evennia.muxlib.scripts import MONITOR_HANDLER as _MONITOR_HANDLER
 
         if _IS_SUBPROCESS:
             # we keep a store of objects modified in subprocesses so

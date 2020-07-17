@@ -39,7 +39,7 @@ class RedButton(DefaultObject):
         This function is called when object is created. Use this
         instead of e.g. __init__.
         """
-        # store desc (default, you can change this at creation time)
+        # store desc (commands, you can change this at creation time)
         desc = "This is a large red button, inviting yet evil-looking. "
         desc += "A closed glass lid protects it."
         self.db.desc = desc

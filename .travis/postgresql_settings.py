@@ -1,14 +1,14 @@
 """
 Evennia settings file.
 
-The available options are found in the default settings file found
+The available options are found in the commands settings file found
 here:
 
 /home/griatch/Devel/Home/evennia/evennia/evennia/settings_default.py
 
 Remember:
 
-Don't copy more from the default file than you actually intend to
+Don't copy more from the commands file than you actually intend to
 change; this will make sure that you don't overload upstream updates
 unnecessarily.
 
@@ -39,14 +39,14 @@ SERVERNAME = "testing_mygame"
 # Testing database types
 
 DATABASES = {
-    "default": {
+    "commands": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "evennia",
         "USER": "evennia",
         "PASSWORD": "password",
         "HOST": "localhost",
-        "PORT": "",  # use default
-        "TEST": {"NAME": "default"},
+        "PORT": "",  # use commands
+        "TEST": {"NAME": "commands"},
     }
 }
 

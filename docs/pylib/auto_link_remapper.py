@@ -43,9 +43,9 @@ URL_REMAPS = {
     "issues": "github:issue",
     "bug": "github:issue",
     "bug-report": "github:issue",
-    "./Default-Command-Help": "api:evennia.commands.default#modules",
-    "../Components/Default-Command-Help": "api:evennia.commands.default#modules",
-    "../../../Components/Default-Command-Help": "api:evennia.commands.default#modules",
+    "./Default-Command-Help": "api:evennia.commands.commands#modules",
+    "../Components/Default-Command-Help": "api:evennia.commands.commands#modules",
+    "../../../Components/Default-Command-Help": "api:evennia.commands.commands#modules",
 }
 
 _USED_REFS = {}

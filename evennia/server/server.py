@@ -11,7 +11,6 @@ import time
 import sys
 import os
 
-from twisted.web import static
 from twisted.application import internet, service
 from twisted.internet import reactor, defer
 from twisted.internet.task import LoopingCall
@@ -29,13 +28,13 @@ evennia._init()
 from django.db import connection
 from django.conf import settings
 
-from evennia.accounts.models import AccountDB
-from evennia.scripts.models import ScriptDB
+from evennia.muxlib.accounts.models import AccountDB
+from evennia.muxlib.scripts.models import ScriptDB
 from evennia.server.models import ServerConfig
 
 from evennia.utils.utils import get_evennia_version, mod_import, make_iter
 from evennia.utils import logger
-from evennia.comms import channelhandler
+from evennia.muxlib.comms import channelhandler
 from evennia.server.sessionhandler import SESSIONS
 
 from django.utils.translation import gettext as _
@@ -149,7 +148,7 @@ def _server_maintenance():
         # validate channels off-sync with scripts
         evennia.CHANNEL_HANDLER.update()
     if _MAINTENANCE_COUNT % (3600 * 7) == 0:
-        # drop database connection every 7 hrs to avoid default timeouts on MySQL
+        # drop database connection every 7 hrs to avoid commands timeouts on MySQL
         # (see https://github.com/evennia/evennia/issues/1376)
         connection.close()
 
@@ -233,10 +232,10 @@ class Evennia(object):
         """
         if (
             ".".join(str(i) for i in django.VERSION) < "1.2"
-            and settings.DATABASES.get("default", {}).get("ENGINE") == "sqlite3"
+            and settings.DATABASES.get("commands", {}).get("ENGINE") == "sqlite3"
         ) or (
             hasattr(settings, "DATABASES")
-            and settings.DATABASES.get("default", {}).get("ENGINE", None)
+            and settings.DATABASES.get("commands", {}).get("ENGINE", None)
             == "django.db.backends.sqlite3"
         ):
             cursor = connection.cursor()
@@ -249,7 +248,7 @@ class Evennia(object):
         """
         We make sure to store the most important object defaults here, so
         we can catch if they change and update them on-objects automatically.
-        This allows for changing default cmdset locations and default
+        This allows for changing commands cmdset locations and commands
         typeclasses in the settings file and have them auto-update all
         already existing objects.
         """
@@ -280,10 +279,10 @@ class Evennia(object):
         if len(
             mismatches
         ):  # can't use any() since mismatches may be [0] which reads as False for any()
-            # we have a changed default. Import relevant objects and
+            # we have a changed commands. Import relevant objects and
             # run the update
-            from evennia.objects.models import ObjectDB
-            from evennia.comms.models import ChannelDB
+            from evennia.muxlib.objects.models import ObjectDB
+            from evennia.muxlib.comms import ChannelDB
 
             # from evennia.accounts.models import AccountDB
             for i, prev, curr in (
@@ -318,7 +317,7 @@ class Evennia(object):
                     ChannelDB.objects.filter(db_typeclass_path__exact=prev).update(
                         db_typeclass_path=curr
                     )
-                # store the new default and clean caches
+                # store the new commands and clean caches
                 ServerConfig.objects.conf(settings_names[i], curr)
                 ObjectDB.flush_instance_cache()
                 AccountDB.flush_instance_cache()
@@ -366,7 +365,7 @@ class Evennia(object):
             mode (str): One of shutdown, reload or reset
 
         """
-        from evennia.objects.models import ObjectDB
+        from evennia.muxlib.objects.models import ObjectDB
 
         # start server time and maintenance task
         self.maintenance_task = LoopingCall(_server_maintenance)
@@ -417,7 +416,7 @@ class Evennia(object):
             # once; we don't need to run the shutdown procedure again.
             defer.returnValue(None)
 
-        from evennia.objects.models import ObjectDB
+        from evennia.muxlib.objects.models import ObjectDB
         from evennia.server.models import ServerConfig
         from evennia.utils import gametime as _GAMETIME_MODULE
 
@@ -434,7 +433,7 @@ class Evennia(object):
             yield self.sessions.all_sessions_portal_sync()
             self.at_server_reload_stop()
             # only save monitor state on reload, not on shutdown/reset
-            from evennia.scripts.monitorhandler import MONITOR_HANDLER
+            from evennia.muxlib.scripts import MONITOR_HANDLER
 
             MONITOR_HANDLER.save()
         else:
@@ -463,7 +462,7 @@ class Evennia(object):
             self.at_server_cold_stop()
 
         # tickerhandler state should always be saved.
-        from evennia.scripts.tickerhandler import TICKER_HANDLER
+        from evennia.muxlib.scripts.tickerhandler import TICKER_HANDLER
 
         TICKER_HANDLER.save()
 
@@ -520,11 +519,11 @@ class Evennia(object):
 
         """
 
-        from evennia.scripts.monitorhandler import MONITOR_HANDLER
+        from evennia.muxlib.scripts import MONITOR_HANDLER
 
         MONITOR_HANDLER.restore(mode == "reload")
 
-        from evennia.scripts.tickerhandler import TICKER_HANDLER
+        from evennia.muxlib.scripts.tickerhandler import TICKER_HANDLER
 
         TICKER_HANDLER.restore(mode == "reload")
 
@@ -533,14 +532,14 @@ class Evennia(object):
         ScriptDB.objects.validate(init_mode=mode)
 
         # start the task handler
-        from evennia.scripts.taskhandler import TASK_HANDLER
+        from evennia.muxlib.scripts.taskhandler import TASK_HANDLER
 
         TASK_HANDLER.load()
         TASK_HANDLER.create_delays()
 
-        # check so default channels exist
-        from evennia.comms.models import ChannelDB
-        from evennia.accounts.models import AccountDB
+        # check so commands channels exist
+        from evennia.muxlib.comms import ChannelDB
+        from evennia.muxlib.accounts.models import AccountDB
         from evennia.utils.create import create_channel
 
         god_account = AccountDB.objects.get(id=1)
@@ -556,7 +555,7 @@ class Evennia(object):
         if connectinfo_chan:
             if not ChannelDB.objects.filter(db_key=mudinfo_chan["key"]):
                 channel = create_channel(**connectinfo_chan)
-        # default channels
+        # commands channels
         for chan_info in settings.DEFAULT_CHANNELS:
             if not ChannelDB.objects.filter(db_key=chan_info["key"]):
                 channel = create_channel(**chan_info)
@@ -579,12 +578,12 @@ class Evennia(object):
         """
         # We need to do this just in case the server was killed in a way where
         # the normal cleanup operations did not have time to run.
-        from evennia.objects.models import ObjectDB
+        from evennia.muxlib.objects.models import ObjectDB
 
         ObjectDB.objects.clear_all_sessids()
 
         # Remove non-persistent scripts
-        from evennia.scripts.models import ScriptDB
+        from evennia.muxlib.scripts.models import ScriptDB
 
         for script in ScriptDB.objects.filter(db_persistent=False):
             script.stop()

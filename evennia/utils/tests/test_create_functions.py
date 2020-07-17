@@ -4,7 +4,7 @@ Tests of create functions
 """
 
 from evennia.utils.test_resources import EvenniaTest
-from evennia.scripts.scripts import DefaultScript
+from evennia.muxlib.scripts.scripts import DefaultScript
 from evennia.utils import create
 
 

@@ -11,7 +11,7 @@ doublets).  This temporary but up-to-date merger of CmdSet is jointly
 called the Current Cmset. It is this Current CmdSet that the
 commandhandler looks through whenever an account enters a command (it
 also adds CmdSets from objects in the room in real-time). All account
-objects have a 'default cmdset' containing all the normal in-game mud
+objects have a 'commands cmdset' containing all the normal in-game mud
 commands (look etc).
 
 So what is all this cmdset complexity good for?
@@ -33,7 +33,7 @@ your normal commands to check if the player is in a dark room. This
 rapidly goes unwieldly and error prone. Instead you just define a
 cmdset with only those commands you want to be available in the 'dark'
 cmdset - maybe a modified look command and a 'light candle' command -
-and have this completely replace the default cmdset.
+and have this completely replace the commands cmdset.
 
 Another example: Say you want your players to be able to go
 fishing. You could implement this as a 'fish' command that fails
@@ -52,7 +52,7 @@ THEN this CommandSet is added to the Cmdhandler of the account. The
 'throw' command (which normally throws rocks) is replaced by the
 custom 'fishing variant' of throw. What has happened is that the
 Fishing CommandSet was merged on top of the Default ones, and due to
-how we defined it, its command overrules the default ones.
+how we defined it, its command overrules the commands ones.
 
 When we are tired of fishing, we give the 'go home' command (or
 whatever) and the Cmdhandler simply removes the fishing CommandSet
@@ -437,7 +437,7 @@ class CmdSetHandler(object):
     def add(self, cmdset, emit_to_obj=None, permanent=False, default_cmdset=False):
         """
         Add a cmdset to the handler, on top of the old ones, unless it
-        is set as the default one (it will then end up at the bottom of the stack)
+        is set as the commands one (it will then end up at the bottom of the stack)
 
         Args:
             cmdset (CmdSet or str): Can be a cmdset object or the python path
@@ -445,7 +445,7 @@ class CmdSetHandler(object):
             emit_to_obj (Object, optional): An object to receive error messages.
             permanent (bool, optional): This cmdset will remain across a server reboot.
             default_cmdset (Cmdset, optional): Insert this to replace the
-                default cmdset position (there is only one such position,
+                commands cmdset position (there is only one such position,
                 always at the bottom of the stack).
 
         Notes:
@@ -487,7 +487,7 @@ class CmdSetHandler(object):
 
     def add_default(self, cmdset, emit_to_obj=None, permanent=True):
         """
-        Shortcut for adding a default cmdset.
+        Shortcut for adding a commands cmdset.
 
         Args:
             cmdset (Cmdset): The Cmdset to add.
@@ -508,11 +508,11 @@ class CmdSetHandler(object):
                 removed. Whenever the cmdset_stack changes, the cmdset is
                 updated. If default_cmdset is set, this argument is ignored.
             default_cmdset (bool, optional): If set, this will remove the
-                default cmdset (at the bottom of the stack).
+                commands cmdset (at the bottom of the stack).
 
         """
         if default_cmdset:
-            # remove the default cmdset only
+            # remove the commands cmdset only
             if self.cmdset_stack:
                 cmdset = self.cmdset_stack[0]
                 if cmdset.permanent:
@@ -526,7 +526,7 @@ class CmdSetHandler(object):
             return
 
         if len(self.cmdset_stack) < 2:
-            # don't allow deleting default cmdsets here.
+            # don't allow deleting commands cmdsets here.
             return
 
         if not cmdset:
@@ -578,7 +578,7 @@ class CmdSetHandler(object):
 
     def remove_default(self):
         """
-        This explicitly deletes only the default cmdset.
+        This explicitly deletes only the commands cmdset.
 
         """
         self.remove(default_cmdset=True)
@@ -601,7 +601,7 @@ class CmdSetHandler(object):
 
     def clear(self):
         """
-        Removes all Command Sets from the handler except the default one
+        Removes all Command Sets from the handler except the commands one
         (use `self.remove_default` to remove that).
 
         """
@@ -620,7 +620,7 @@ class CmdSetHandler(object):
             cmdset (str or Cmdset): Cmdset key, pythonpath or
                 Cmdset to check the existence for.
             must_be_default (bool, optional): Only return True if
-                the checked cmdset is the default one.
+                the checked cmdset is the commands one.
 
         Returns:
             has_cmdset (bool): Whether or not the cmdset is in the handler.

@@ -280,13 +280,13 @@ class BaseState(object):
 
         Args:
             next_state (str, optional): This allows the calling code
-                to redirect to a different state than the 'default' one
+                to redirect to a different state than the 'commands' one
                 (creating branching paths in the game). Override this method
-                to customize (by default the input will always override default
+                to customize (by commands the input will always override commands
                 set on the class)
         Returns:
             state_name (str or None): Name of next state to switch to. None
-                to remain in this state. By default we check the room for the
+                to remain in this state. By commands we check the room for the
                 "finished" flag be set.
         """
         return next_state or self.next_state

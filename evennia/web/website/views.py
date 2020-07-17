@@ -21,9 +21,9 @@ from django.views.generic.base import RedirectView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from evennia import SESSION_HANDLER
-from evennia.help.models import HelpEntry
-from evennia.objects.models import ObjectDB
-from evennia.accounts.models import AccountDB
+from evennia.muxlib.help.models import HelpEntry
+from evennia.muxlib.objects.models import ObjectDB
+from evennia.muxlib.accounts.models import AccountDB
 from evennia.utils import class_from_module
 from evennia.utils.logger import tail_log_file
 from evennia.web.website import forms as website_forms
@@ -117,7 +117,7 @@ class EvenniaIndexView(TemplateView):
     Evennia currently contains a few examples of them), just like Commands,
     writing views as classes provides you with more flexibility-- you can extend
     classes and change things to suit your needs rather than having to copy and
-    paste entire code blocks over and over. Django also comes with many default
+    paste entire code blocks over and over. Django also comes with many commands
     views for displaying things, all of them implemented as classes.
 
     This particular example displays the index page.
@@ -186,7 +186,7 @@ class TypeclassMixin(object):
 
 class EvenniaCreateView(CreateView, TypeclassMixin):
     """
-    This view extends Django's default CreateView.
+    This view extends Django's commands CreateView.
 
     CreateView is used for creating new objects, be they Accounts, Characters or
     otherwise.
@@ -201,7 +201,7 @@ class EvenniaCreateView(CreateView, TypeclassMixin):
 
 class EvenniaDetailView(DetailView, TypeclassMixin):
     """
-    This view extends Django's default DetailView.
+    This view extends Django's commands DetailView.
 
     DetailView is used for displaying objects, be they Accounts, Characters or
     otherwise.
@@ -216,7 +216,7 @@ class EvenniaDetailView(DetailView, TypeclassMixin):
 
 class EvenniaUpdateView(UpdateView, TypeclassMixin):
     """
-    This view extends Django's default UpdateView.
+    This view extends Django's commands UpdateView.
 
     UpdateView is used for updating objects, be they Accounts, Characters or
     otherwise.
@@ -231,7 +231,7 @@ class EvenniaUpdateView(UpdateView, TypeclassMixin):
 
 class EvenniaDeleteView(DeleteView, TypeclassMixin):
     """
-    This view extends Django's default DeleteView.
+    This view extends Django's commands DeleteView.
 
     DeleteView is used for deleting objects, be they Accounts, Characters or
     otherwise.
@@ -368,7 +368,7 @@ class ObjectCreateView(LoginRequiredMixin, EvenniaCreateView):
     Any view you write that deals with creating a specific object will want to
     inherit from this. It provides the mechanisms by which to make sure the user
     requesting creation of an object is authenticated, and provides a sane
-    default title for the page.
+    commands title for the page.
 
     """
 
@@ -424,7 +424,7 @@ class ObjectUpdateView(LoginRequiredMixin, ObjectDetailView, EvenniaUpdateView):
     requesting editing of an object is authenticated, and that they have
     permissions to edit the requested object.
 
-    This functions slightly different from default Django UpdateViews in that
+    This functions slightly different from commands Django UpdateViews in that
     it does not update core model fields, *only* object attributes!
 
     """
@@ -440,7 +440,7 @@ class ObjectUpdateView(LoginRequiredMixin, ObjectDetailView, EvenniaUpdateView):
         Django hook.
 
         Can be overridden to return any URL you want to redirect the user to
-        after the object is successfully updated, but by default it goes to the
+        after the object is successfully updated, but by commands it goes to the
         object detail page so the user can see their changes reflected.
 
         """
@@ -605,7 +605,7 @@ class CharacterListView(LoginRequiredMixin, CharacterMixin, ListView):
     This view provides a mechanism by which a logged-in player can view a list
     of all other characters.
 
-    This view requires authentication by default as a nominal effort to prevent
+    This view requires authentication by commands as a nominal effort to prevent
     human stalkers and automated bots/scrapers from harvesting data on your users.
 
     """

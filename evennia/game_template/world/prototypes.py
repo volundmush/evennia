@@ -10,7 +10,7 @@ such Swords with only minor variations. Prototypes can also inherit
 and combine together to form entire hierarchies (such as giving all
 Sabres and all Broadswords some common properties). Note that bigger
 variations, such as custom commands or functionality belong in a
-hierarchy of typeclasses instead.
+hierarchy of db instead.
 
 Example prototypes are read by the `@spawn` command but is also easily
 available to use from code via `evennia.spawn` or `evennia.utils.spawner`.

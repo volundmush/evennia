@@ -12,7 +12,7 @@ just overloads its hooks to have it perform its function.
 
 """
 
-from evennia import DefaultScript
+from evennia.muxlib.scripts.scripts import DefaultScript
 
 
 class Script(DefaultScript):

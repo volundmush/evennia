@@ -281,7 +281,7 @@ The code is longer, but it presents the entire concept in our view.  Edit the
 ```python
 from django.http import Http404
 from django.shortcuts import render
-from evennia.help.models import HelpEntry
+from evennia.muxlib.help.models import HelpEntry
 
 from typeclasses.characters import Character
 

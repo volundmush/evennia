@@ -1,9 +1,9 @@
 """
 Characters
 
-Characters are (by default) Objects setup to be puppeted by Accounts.
+Characters are (by commands) Objects setup to be puppeted by Accounts.
 They are what you "see" in game. The Character class in this module
-is setup to be the "default" character type created by the default
+is setup to be the "commands" character type created by the commands
 creation commands.
 
 """

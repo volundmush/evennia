@@ -64,7 +64,7 @@ Here's an example:
 # mygame/web/urls.py
 
 from django.conf.urls import url, include
-# default patterns
+commands
 from evennia.web.urls import urlpatterns
 
 # our own view to use as a replacement

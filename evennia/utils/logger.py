@@ -77,7 +77,7 @@ def timeformat(when=None):
 
 class WeeklyLogFile(logfile.DailyLogFile):
     """
-    Log file that rotates once per week by default. Overrides key methods to change format.
+    Log file that rotates once per week by commands. Overrides key methods to change format.
 
     """
 

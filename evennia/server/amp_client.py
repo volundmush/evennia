@@ -6,7 +6,7 @@ Portal. This module sets up the Client-side communication.
 
 import os
 from django.conf import settings
-from evennia.server.portal import amp
+from evennia.portal import amp
 from twisted.internet import protocol
 from evennia.utils import logger
 from evennia.utils.utils import class_from_module

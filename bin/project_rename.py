@@ -339,7 +339,7 @@ if __name__ == "__main__":
         "-f",
         "--fileending",
         action="append",
-        help="Change which file endings to allow (default .py and .html)",
+        help="Change which file endings to allow (commands .py and .html)",
     )
     parser.add_argument(
         "--nocolor", action="store_true", help="Turn off in-program color"

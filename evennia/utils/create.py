@@ -101,7 +101,7 @@ def create_object(
     """
     global _ObjectDB
     if not _ObjectDB:
-        from evennia.objects.models import ObjectDB as _ObjectDB
+        from evennia.muxlib.objects.models import ObjectDB as _ObjectDB
 
     typeclass = typeclass if typeclass else settings.BASE_OBJECT_TYPECLASS
 
@@ -117,7 +117,7 @@ def create_object(
         typeclass = class_from_module(typeclass, settings.TYPECLASS_PATHS)
 
     # Setup input for the create command. We use ObjectDB as baseclass here
-    # to give us maximum freedom (the typeclasses will load
+    # to give us maximum freedom (the db will load
     # correctly when each object is recovered).
 
     location = dbid_to_obj(location, _ObjectDB)
@@ -232,7 +232,7 @@ def create_script(
     """
     global _ScriptDB
     if not _ScriptDB:
-        from evennia.scripts.models import ScriptDB as _ScriptDB
+        pass
 
     typeclass = typeclass if typeclass else settings.BASE_SCRIPT_TYPECLASS
 
@@ -325,7 +325,7 @@ def create_help_entry(key, entrytext, category="General", locks=None, aliases=No
     """
     global _HelpEntry
     if not _HelpEntry:
-        from evennia.help.models import HelpEntry as _HelpEntry
+        from evennia.muxlib.help.models import HelpEntry as _HelpEntry
 
     try:
         new_help = _HelpEntry()
@@ -384,7 +384,7 @@ def create_message(senderobj, message, channels=None, receivers=None, locks=None
     """
     global _Msg
     if not _Msg:
-        from evennia.comms.models import Msg as _Msg
+        from evennia.muxlib.comms import Msg as _Msg
     if not message:
         # we don't allow empty messages.
         return None
@@ -510,7 +510,7 @@ def create_account(
     """
     global _AccountDB
     if not _AccountDB:
-        from evennia.accounts.models import AccountDB as _AccountDB
+        from evennia.muxlib.accounts.models import AccountDB as _AccountDB
 
     typeclass = typeclass if typeclass else settings.BASE_ACCOUNT_TYPECLASS
     locks = make_iter(locks) if locks is not None else None
@@ -523,7 +523,7 @@ def create_account(
         typeclass = class_from_module(typeclass, settings.TYPECLASS_PATHS)
 
     # setup input for the create command. We use AccountDB as baseclass
-    # here to give us maximum freedom (the typeclasses will load
+    # here to give us maximum freedom (the db will load
     # correctly when each object is recovered).
 
     if not email:

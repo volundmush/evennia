@@ -13,7 +13,7 @@ from evennia import Command as BaseCommand
 class Command(BaseCommand):
     """
     Inherit from this if you want to create your own command styles
-    from scratch.  Note that Evennia's default commands inherits from
+    from scratch.  Note that Evennia's commands commands inherits from
     MuxCommand instead.
 
     Note that the class's `__doc__` string (this text) is
@@ -36,16 +36,16 @@ class Command(BaseCommand):
 
 # -------------------------------------------------------------
 #
-# The default commands inherit from
+# The commands commands inherit from
 #
-#   evennia.commands.default.muxcommand.MuxCommand.
+#   evennia.commands.commands.muxcommand.MuxCommand.
 #
-# If you want to make sweeping changes to default commands you can
+# If you want to make sweeping changes to commands commands you can
 # uncomment this copy of the MuxCommand parent and add
 #
 #   COMMAND_DEFAULT_CLASS = "commands.command.MuxCommand"
 #
-# to your settings file. Be warned that the default commands expect
+# to your settings file. Be warned that the commands commands expect
 # the functionality implemented in the parse() method, so be
 # careful with what you change.
 #
@@ -71,7 +71,7 @@ class Command(BaseCommand):
 #         This is called by the cmdhandler to determine
 #         if srcobj is allowed to execute this command.
 #         We just show it here for completeness - we
-#         are satisfied using the default check in Command.
+#         are satisfied using the commands check in Command.
 #         """
 #         return super().has_perm(srcobj)
 #

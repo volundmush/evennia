@@ -1,14 +1,14 @@
 """
 Evennia settings file.
 
-The available options are found in the default settings file found
+The available options are found in the commands settings file found
 here:
 
 /home/griatch/Devel/Home/evennia/evennia/evennia/settings_default.py
 
 Remember:
 
-Don't copy more from the default file than you actually intend to
+Don't copy more from the commands file than you actually intend to
 change; this will make sure that you don't overload upstream updates
 unnecessarily.
 
@@ -16,7 +16,7 @@ When changing a setting requiring a file system path (like
 path/to/actual/file.py), use GAME_DIR and EVENNIA_DIR to reference
 your game folder and the Evennia library folders respectively. Python
 paths (path.to.module) should be given relative to the game's root
-folder (typeclasses.foo) whereas paths within the Evennia library
+folder (db.foo) whereas paths within the Evennia library
 needs to be given explicitly (evennia.foo).
 
 If you want to share your game dir, including its settings, you can
@@ -36,7 +36,7 @@ from evennia.settings_default import *
 # This is the name of your game. Make it catchy!
 SERVERNAME = "testing_mygame"
 
-# Using default sqlite3 settings
+# Using commands sqlite3 settings
 
 ######################################################################
 # Settings given in secret_settings.py override those in this file.

@@ -326,8 +326,8 @@ class BlindCmdSet(CmdSet):
 
     def at_cmdset_creation(self):
         "Setup the blind cmdset"
-        from evennia.commands.default.general import CmdSay
-        from evennia.commands.default.general import CmdPose
+        from evennia.muxlib.commands import CmdSay
+        from evennia.muxlib.commands import CmdPose
 
         self.add(CmdSay())
         self.add(CmdPose())

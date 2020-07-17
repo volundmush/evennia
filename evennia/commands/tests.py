@@ -309,7 +309,7 @@ class TestGetAndMergeCmdSets(TwistedTestCase, EvenniaTest):
         return deferred
 
     def test_from_account(self):
-        from evennia.commands.default.cmdset_account import AccountCmdSet
+        from evennia.muxlib.commands import AccountCmdSet
 
         a = self.cmdset_a
         a.no_channels = True
@@ -360,8 +360,8 @@ class TestGetAndMergeCmdSets(TwistedTestCase, EvenniaTest):
 
     def test_autocmdsets(self):
         import evennia
-        from evennia.commands.default.cmdset_account import AccountCmdSet
-        from evennia.comms.channelhandler import CHANNEL_HANDLER
+        from evennia.muxlib.commands import AccountCmdSet
+        from evennia.muxlib.comms import CHANNEL_HANDLER
 
         testchannel = evennia.create_channel("channeltest", locks="listen:all();send:all()")
         CHANNEL_HANDLER.add(testchannel)

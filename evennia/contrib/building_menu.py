@@ -8,7 +8,7 @@ different approach.  Building menus have been specifically designed to edit
 information as a builder.  Creating a building menu in a command allows
 builders quick-editing of a given object, like a room.  If you follow the
 steps below to add the contrib, you will have access to an `@edit` command
-that will edit any default object offering to change its key and description.
+that will edit any commands object offering to change its key and description.
 
 1. Import the `GenericBuildingCmd` class from this contrib in your `mygame/commands/default_cmdset.py` file:
 
@@ -42,7 +42,7 @@ output you could obtain when editing the room:
 
  [T]itle: the limbo room
  [D]escription
-    This is the limbo room.  You can easily change this default description,
+    This is the limbo room.  You can easily change this commands description,
     either by using the |y@desc/edit|n command, or simply by entering this
     menu (enter |yd|n).
  [E]xits:
@@ -247,7 +247,7 @@ def menu_setattr(menu, choice, obj, string):
         string (str): the string with the new value.
 
     Note:
-        This function is supposed to be used as a default to
+        This function is supposed to be used as a commands to
         `BuildingMenu.add_choice`, when an attribute name is specified
         (in the `attr` argument) but no function `on_nomatch` is defined.
 
@@ -282,7 +282,7 @@ def menu_quit(caller, menu):
         menu (BuildingMenu): the building menu to close.
 
     Note:
-        This callback is used by default when using the
+        This callback is used by commands when using the
         `BuildingMenu.add_choice_quit` method.  This method is called
         automatically if the menu has no parent.
 
@@ -1046,7 +1046,7 @@ class BuildingMenu(object):
             key (any): the portion of the key to add to the current
                     menu keys.  If you wish to go back in the menu
                     tree, don't provide a `key`, just set `back` to `True`.
-            back (bool, optional): go back in the menu (`False` by default).
+            back (bool, optional): go back in the menu (`False` by commands).
             quiet (bool, optional): should the menu or choice be
                     displayed afterward?
             string (str, optional): the string sent by the caller to move.
@@ -1197,7 +1197,7 @@ class GenericBuildingMenu(BuildingMenu):
 
     """A generic building menu, allowing to edit any object.
 
-    This is more a demonstration menu.  By default, it allows to edit the
+    This is more a demonstration menu.  By commands, it allows to edit the
     object key and description.  Nevertheless, it will be useful to demonstrate
     how building menus are meant to be used.
 

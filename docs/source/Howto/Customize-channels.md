@@ -233,7 +233,7 @@ You'll need to add a line of import in your `commands/comms.py` file.  We'll
 see why this import is important when diving in the command itself:
 
 ```python
-from evennia.comms.models import ChannelDB
+from evennia.muxlib.comms import ChannelDB
 ```
 
 ### The class layout

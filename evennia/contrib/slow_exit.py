@@ -17,13 +17,13 @@ using something like this:
 
 Installation:
 
-To make this your new default exit, modify mygame/typeclasses/exits.py
-to import this module and change the default Exit class to inherit
+To make this your new commands exit, modify mygame/db/exits.py
+to import this module and change the commands Exit class to inherit
 from SlowExit instead.
 
 To get the ability to change your speed and abort your movement,
 simply import and add CmdSetSpeed and CmdStop from this module to your
-default cmdset (see tutorials on how to do this if you are unsure).
+commands cmdset (see tutorials on how to do this if you are unsure).
 
 Notes:
 
@@ -51,7 +51,7 @@ class SlowExit(DefaultExit):
         """
 
         # if the traverser has an Attribute move_speed, use that,
-        # otherwise default to "walk" speed
+        # otherwise commands to "walk" speed
         move_speed = traversing_object.db.move_speed or "walk"
         move_delay = MOVE_DELAY.get(move_speed, 4)
 

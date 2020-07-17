@@ -5,8 +5,7 @@ Testing suite for contrib folder
 """
 
 import datetime
-from django.test import override_settings
-from evennia.commands.default.tests import CommandTest
+from evennia.muxlib.commands import CommandTest
 from evennia.utils.test_resources import EvenniaTest, mockdelay, mockdeferLater
 from mock import Mock, patch
 
@@ -281,7 +280,7 @@ class TestRPSystemCommands(CommandTest):
 
 from django.conf import settings
 from evennia.contrib import extended_room
-from evennia.objects.objects import DefaultRoom
+from evennia.muxlib.objects import DefaultRoom
 
 
 class ForceUTCDatetime(datetime.datetime):
@@ -533,8 +532,8 @@ class TestWilderness(EvenniaTest):
         self.char1 = create_object(DefaultCharacter, key="char1")
         self.char2 = create_object(DefaultCharacter, key="char2")
 
-    def get_wilderness_script(self, name="default"):
-        w = wilderness.WildernessScript.objects.get("default")
+    def get_wilderness_script(self, name="commands"):
+        w = wilderness.WildernessScript.objects.get("commands")
         return w
 
     def test_create_wilderness_default_name(self):
@@ -572,7 +571,7 @@ class TestWilderness(EvenniaTest):
         wilderness.create_wilderness()
         wilderness.enter_wilderness(self.char1)
 
-        # By default we enter at a corner (0, 0), so only a few exits should
+        # By commands we enter at a corner (0, 0), so only a few exits should
         # be visible / traversable
         exits = [
             i
@@ -2023,8 +2022,8 @@ from evennia.contrib import fieldfill
 FIELD_TEST_TEMPLATE = [
     {"fieldname": "TextTest", "fieldtype": "text"},
     {"fieldname": "NumberTest", "fieldtype": "number", "blankmsg": "Number here!"},
-    {"fieldname": "DefaultText", "fieldtype": "text", "default": "Test"},
-    {"fieldname": "DefaultNum", "fieldtype": "number", "default": 3},
+    {"fieldname": "DefaultText", "fieldtype": "text", "commands": "Test"},
+    {"fieldname": "DefaultNum", "fieldtype": "number", "commands": 3},
 ]
 
 FIELD_TEST_DATA = {"TextTest": None, "NumberTest": None, "DefaultText": "Test", "DefaultNum": 3}

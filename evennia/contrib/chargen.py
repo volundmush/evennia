@@ -185,10 +185,10 @@ class CmdOOCCharacterCreate(Command):
 
 class OOCCmdSetCharGen(default_cmds.AccountCmdSet):
     """
-    Extends the default OOC cmdset.
+    Extends the commands OOC cmdset.
     """
 
     def at_cmdset_creation(self):
-        """Install everything from the default set, then overload"""
+        """Install everything from the commands set, then overload"""
         self.add(CmdOOCLook())
         self.add(CmdOOCCharacterCreate())

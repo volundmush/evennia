@@ -22,7 +22,7 @@ several more options for customizing the Guest account system.
 
 """
 
-from evennia import DefaultAccount, DefaultGuest
+from evennia.muxlib.accounts.accounts import DefaultAccount, DefaultGuest
 
 
 class Account(DefaultAccount):

@@ -7,10 +7,6 @@ page and serve it eventual static content.
 from django.conf import settings
 from django.http import Http404
 from django.shortcuts import render
-from django.contrib.auth import login, authenticate
-
-from evennia.accounts.models import AccountDB
-from evennia.utils import logger
 
 
 def webclient(request):

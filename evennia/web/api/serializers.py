@@ -11,11 +11,11 @@ often django model instances, that we can use (deserialization).
 
 from rest_framework import serializers
 
-from evennia.objects.objects import DefaultObject
-from evennia.accounts.accounts import DefaultAccount
-from evennia.scripts.models import ScriptDB
-from evennia.typeclasses.attributes import Attribute
-from evennia.typeclasses.tags import Tag
+from evennia.muxlib.objects import DefaultObject
+from evennia.muxlib.accounts.accounts import DefaultAccount
+from evennia.muxlib.scripts.models import ScriptDB
+from evennia.db.attributes import Attribute
+from evennia.db.tags import Tag
 
 
 class AttributeSerializer(serializers.ModelSerializer):

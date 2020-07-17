@@ -26,7 +26,7 @@ class TutorialMirror(DefaultObject):
         Args:
             looker (Object): Object doing the looking.
             **kwargs (dict): Arbitrary, optional arguments for users
-                overriding the call (unused by default).
+                overriding the call (unused by commands).
         """
 
         if isinstance(looker, self.__class__):

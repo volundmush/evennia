@@ -19,6 +19,13 @@ loop = uvloop.new_event_loop()
 asyncio.set_event_loop(loop)
 asyncioreactor.install(eventloop=loop)
 
+from evennia.application import ApplicationFactory
+
+
+class PortalFactory(ApplicationFactory):
+    services_property = 'PORTAL_SERVICES'
+
+
 from os.path import dirname, abspath
 from twisted.application import internet, service
 from twisted.internet.task import LoopingCall
@@ -46,6 +53,15 @@ try:
     connection.close()
 except Exception:
     pass
+
+
+
+_factory_class = class_from_module(settings.PORTAL_FACTORY)
+
+
+
+
+
 
 PORTAL_SERVICES_PLUGIN_MODULES = [
     mod_import(module) for module in make_iter(settings.PORTAL_SERVICES_PLUGIN_MODULES)
@@ -247,18 +263,12 @@ class Portal:
 
 # twistd requires us to define the variable 'application' so it knows
 # what to execute from.
-application = service.Application("Portal")
 
-# custom logging
 
-if "--nodaemon" not in sys.argv:
-    logfile = logger.WeeklyLogFile(
-        os.path.basename(settings.PORTAL_LOG_FILE),
-        os.path.dirname(settings.PORTAL_LOG_FILE),
-        day_rotation=settings.PORTAL_LOG_DAY_ROTATION,
-        max_size=settings.PORTAL_LOG_MAX_SIZE,
-    )
-    application.setComponent(ILogObserver, logger.PortalLogObserver(logfile).emit)
+_factory = _factory_class('Portal', reactor, settings, sys.argv)
+_factory.initialize_services()
+_factory.setup()
+application = _factory.build()
 
 # The main Portal server program. This sets up the database
 # and is where we store all the other services.

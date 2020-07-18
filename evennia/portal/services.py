@@ -96,6 +96,39 @@ class AmpService(EvenniaService):
     This Service runs the AMP Server that the Server uses to link up to the Portal.
     """
 
+    def __init__(self):
+        super().__init__()
+        self.interface = None
+        self.port = None
+        self.factory_class = None
+        self.protocol_class = None
+        self.factory = None
+        self.listener = None
+        self.config = None
+
+    def setup(self):
+        if not self.settings:
+            raise RuntimeError(f"{self} has no settings. Cannot setup!")
+        config = self.settings.AMP
+        self.config = config
+        self.interface = config['interface']
+        self.port = config['port']
+        self.factory_class = class_from_module(config['factory_class'])
+        self.protocol_class = class_from_module(config['protocol_class'])
+
+    def startService(self):
+        if self.running or not self.config['enabled']:
+            return
+
+        self.running = 1
+
+
+    def stopService(self):
+        if not self.running:
+            return
+        result = self.listener.stopListening()
+        self.running = 0
+        return result
 
 
 class WebService(EvenniaService):

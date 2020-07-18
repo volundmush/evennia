@@ -7,7 +7,7 @@ these are the Evennia Server and the evennia launcher).
 import os
 import sys
 from twisted.internet import protocol
-from evennia.portal import amp
+from evennia.portal.networking import amp
 from django.conf import settings
 from subprocess import Popen, STDOUT
 from evennia.utils import logger

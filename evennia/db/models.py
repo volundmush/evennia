@@ -25,6 +25,8 @@ This module also contains the Managers for the respective models; inherit from
 these to create custom managers.
 
 """
+
+import uuid
 from django.db.models import signals
 
 from django.db.models.base import ModelBase
@@ -172,7 +174,7 @@ class TypeclassBase(SharedMemoryModelBase):
 #
 
 
-class TypedObject(SharedMemoryModel):
+class Entity(SharedMemoryModel):
     """
     Abstract Django model.
 
@@ -202,7 +204,7 @@ class TypedObject(SharedMemoryModel):
 
     # Main identifier of the object, for searching. Is accessed with self.key
     # or self.name
-    db_key = models.CharField("key", max_length=255, db_index=True)
+    db_key = models.UUIDField("key", unique=True, default=uuid.uuid4)
     # This is the python path to the type class this object is tied to. The
     # typeclass is what defines what kind of Object this is)
     db_typeclass_path = models.CharField(
@@ -219,15 +221,6 @@ class TypedObject(SharedMemoryModel):
         "locks",
         blank=True,
         help_text="locks limit access to an entity. A lock is defined as a 'lock string' on the form 'type:lockfunctions', defining what functionality is locked and how to determine access. Not defining a lock means no access is granted.",
-    )
-    # many2many relationships
-    db_attributes = models.ManyToManyField(
-        Attribute,
-        help_text="attributes on this object. An attribute can hold any pickle-able python object (see docs for special cases).",
-    )
-    db_tags = models.ManyToManyField(
-        Tag,
-        help_text="tags on this object. Tags are simple string markers to identify, group and alias objects.",
     )
 
     # Database manager

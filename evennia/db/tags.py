@@ -62,9 +62,7 @@ class Tag(models.Model):
         help_text="optional data field with extra information. This is not searched for.",
     )
     # this is "objectdb" etc. Required behind the scenes
-    db_model = models.CharField(
-        "model", max_length=32, null=True, help_text="database model to Tag", db_index=True
-    )
+    db_owner = models.ForeignKey('db.entity', related_name='tag_storage', on_delete=models.CASCADE)
     # this is None, alias or permission
     db_tagtype = models.CharField(
         "tagtype",
@@ -78,8 +76,8 @@ class Tag(models.Model):
     class Meta(object):
         "Define Django meta options"
         verbose_name = "Tag"
-        unique_together = (("db_key", "db_category", "db_tagtype", "db_model"),)
-        index_together = (("db_key", "db_category", "db_tagtype", "db_model"),)
+        unique_together = (("db_key", "db_category", "db_tagtype", "db_owner"),)
+        index_together = (("db_key", "db_category", "db_tagtype", "db_owner"),)
 
     def __lt__(self, other):
         return str(self) < str(other)
@@ -96,7 +94,7 @@ class Tag(models.Model):
 #
 
 
-class TagHandler(object):
+class TagHandler:
     """
     Generic tag-handler. Accessed via TypedObject.tags.
 
@@ -116,8 +114,8 @@ class TagHandler(object):
 
         """
         self.obj = obj
+        self.storage = obj.tag_storage
         self._objid = obj.id
-        self._model = obj.__dbclass__.__name__.lower()
         self._cache = {}
         # store category names fully cached
         self._catcache = {}
@@ -127,13 +125,11 @@ class TagHandler(object):
     def _query_all(self):
         "Get all tags for this objects"
         query = {
-            "%s__id" % self._model: self._objid,
-            "tag__db_model": self._model,
-            "tag__db_tagtype": self._tagtype,
+            "db_tagtype": self._tagtype,
         }
         return [
             conn.tag
-            for conn in getattr(self.obj, self._m2m_fieldname).through.objects.filter(**query)
+            for conn in self.storage.filter(**query)
         ]
 
     def _fullcache(self):
@@ -190,13 +186,11 @@ class TagHandler(object):
                 return [tag]  # return cached entity
             else:
                 query = {
-                    "%s__id" % self._model: self._objid,
-                    "tag__db_model": self._model,
-                    "tag__db_tagtype": self._tagtype,
-                    "tag__db_key__iexact": key.lower(),
-                    "tag__db_category__iexact": category.lower() if category else None,
+                    "db_tagtype": self._tagtype,
+                    "db_key__iexact": key.lower(),
+                    "db_category__iexact": category.lower() if category else None,
                 }
-                conn = getattr(self.obj, self._m2m_fieldname).through.objects.filter(**query)
+                conn = self.storage.filter(**query)
                 if conn:
                     tag = conn[0].tag
                     if _TYPECLASS_AGGRESSIVE_CACHE:
@@ -212,14 +206,12 @@ class TagHandler(object):
             else:
                 # we have to query to make this category up-date in the cache
                 query = {
-                    "%s__id" % self._model: self._objid,
-                    "tag__db_model": self._model,
-                    "tag__db_tagtype": self._tagtype,
-                    "tag__db_category__iexact": category.lower() if category else None,
+                    "db_tagtype": self._tagtype,
+                    "db_category__iexact": category.lower() if category else None,
                 }
                 tags = [
                     conn.tag
-                    for conn in getattr(self.obj, self._m2m_fieldname).through.objects.filter(
+                    for conn in self.storage.filter(
                         **query
                     )
                 ]
@@ -403,13 +395,11 @@ class TagHandler(object):
         if not self._cache_complete:
             self._fullcache()
         query = {
-            "%s__id" % self._model: self._objid,
-            "tag__db_model": self._model,
-            "tag__db_tagtype": self._tagtype,
+            "db_tagtype": self._tagtype,
         }
         if category:
             query["tag__db_category"] = category.strip().lower()
-        getattr(self.obj, self._m2m_fieldname).through.objects.filter(**query).delete()
+        self.storage.filter(**query).delete()
         self._cache = {}
         self._catcache = {}
         self._cache_complete = False

@@ -25,7 +25,7 @@ put secret game- or server-specific settings in secret_settings.py.
 """
 
 # Use the defaults from Evennia unless explicitly overridden
-from evennia.settings_default import *
+from evennia.muxlib.settings_muxlib import *
 
 ######################################################################
 # Evennia base server config

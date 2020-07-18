@@ -10,6 +10,14 @@ by game/evennia.py).
 import sys
 import os
 import time
+import asyncio
+import uvloop
+
+from twisted.internet import asyncioreactor
+
+loop = uvloop.new_event_loop()
+asyncio.set_event_loop(loop)
+asyncioreactor.install(eventloop=loop)
 
 from os.path import dirname, abspath
 from twisted.application import internet, service
@@ -130,7 +138,7 @@ def _portal_maintenance():
 # -------------------------------------------------------------
 
 
-class Portal(object):
+class Portal:
 
     """
     The main Portal server handler. This object sets up the database

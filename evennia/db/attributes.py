@@ -192,16 +192,7 @@ class Attribute(IAttribute, SharedMemoryModel):
     db_lock_storage = models.TextField(
         "locks", blank=True, help_text="Lockstrings for this object are stored here."
     )
-    db_model = models.CharField(
-        "model",
-        max_length=32,
-        db_index=True,
-        blank=True,
-        null=True,
-        help_text="Which model of object this attribute is attached to (A "
-        "natural key like 'objects.objectdb'). You should not change "
-        "this value unless you know what you are doing.",
-    )
+    db_entity = models.ForeignKey('db.Entity', related_name='attribute_storage', on_delete=models.CASCADE)
     # subclass of Attribute (None or nick)
     db_attrtype = models.CharField(
         "attrtype",
@@ -220,6 +211,7 @@ class Attribute(IAttribute, SharedMemoryModel):
     class Meta(object):
         "Define Django meta options"
         verbose_name = "Evennia Attribute"
+        unique_together = (('db_entity', 'db_attrtype', 'db_category', 'db_key'))
 
     # Wrapper properties to easily set database fields. These are
     # @property decorators that allows to access these fields using
@@ -827,48 +819,42 @@ class ModelAttributeBackend(IAttributeBackend):
 
     def __init__(self, handler, attrtype):
         super().__init__(handler, attrtype)
-        self._model = to_str(handler.obj.__dbclass__.__name__.lower())
+        self.storage = handler.obj.attribute_storage
 
     def query_all(self):
         query = {
-            "%s__id" % self._model: self._objid,
-            "attribute__db_model__iexact": self._model,
-            "attribute__db_attrtype": self._attrtype,
+            "db_attrtype": self._attrtype,
         }
         return [
             conn.attribute
-            for conn in getattr(self.obj, self._m2m_fieldname).through.objects.filter(**query)
+            for conn in self.storage.filter(**query)
         ]
 
     def query_key(self, key, category):
         query = {
-            "%s__id" % self._model: self._objid,
-            "attribute__db_model__iexact": self._model,
-            "attribute__db_attrtype": self._attrtype,
-            "attribute__db_key__iexact": key.lower(),
-            "attribute__db_category__iexact": category.lower() if category else None,
+            "db_attrtype": self._attrtype,
+            "db_key__iexact": key.lower(),
+            "db_category__iexact": category.lower() if category else None,
         }
         if not self.obj.pk:
             return []
-        return getattr(self.obj, self._m2m_fieldname).through.objects.filter(**query)
+        return self.storage.filter(**query)
 
     def query_category(self, category):
         query = {
-            "%s__id" % self._model: self._objid,
-            "attribute__db_model__iexact": self._model,
-            "attribute__db_attrtype": self._attrtype,
-            "attribute__db_category__iexact": category.lower() if category else None,
+            "db_attrtype": self._attrtype,
+            "db_category__iexact": category.lower() if category else None,
         }
         return [
             conn.attribute
-            for conn in getattr(self.obj, self._m2m_fieldname).through.objects.filter(**query)
+            for conn in self.storage.filter(**query)
         ]
 
     def do_create_attribute(self, key, category, lockstring, value, strvalue):
         kwargs = {
             "db_key": key,
             "db_category": category,
-            "db_model": self._model,
+            "db_owner": self.obj,
             "db_lock_storage": lockstring if lockstring else "",
             "db_attrtype": self._attrtype,
         }
@@ -880,7 +866,6 @@ class ModelAttributeBackend(IAttributeBackend):
             kwargs["db_strvalue"] = None
         new_attr = self._attrclass(**kwargs)
         new_attr.save()
-        getattr(self.obj, self._m2m_fieldname).add(new_attr)
         self._set_cache(key, category, new_attr)
         return new_attr
 
